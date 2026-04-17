@@ -12,9 +12,17 @@ public class PlayerController : MonoBehaviour
     [Tooltip("How fast the sprite rotates to align with gravity. Set to 0 for instant snap.")]
     public float rotationSpeed = 10f;
 
+    [Header("Wall Bounce")]
+    [Tooltip("How much velocity is preserved after bouncing. 1 = full bounce, 0 = no bounce.")]
+    [Range(0f, 1f)]
+    public float bounciness = 0.8f;
+
     private Rigidbody2D rb;
     private Vector2 swipeStart;
     private bool isSwiping = false;
+
+    // Cached velocity from the frame BEFORE collision — so we always reflect a real value
+    private Vector2 _velocityBeforeCollision;
 
     public int health = 100;
 
@@ -25,14 +33,12 @@ public class PlayerController : MonoBehaviour
     private float damageCooldown = 0.5f;
     private float lastDamageTime = -999f;
 
-
+    // -------------------------------------------------------------------------
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-
         rb.freezeRotation = true;
 
-        // Grab the EnvironmentBehaviour from the parent and subscribe
         EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
         if (env != null)
             env.onGravityChanged.AddListener(OnGravityChanged);
@@ -42,12 +48,12 @@ public class PlayerController : MonoBehaviour
 
     void OnDestroy()
     {
-        // Clean up the listener to avoid stale references
         EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
         if (env != null)
             env.onGravityChanged.RemoveListener(OnGravityChanged);
     }
 
+    // -------------------------------------------------------------------------
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -66,13 +72,35 @@ public class PlayerController : MonoBehaviour
 
             Vector2 direction = swipeDelta.normalized;
             float strength = Mathf.Min(swipeDelta.magnitude * forceMultiplier / 100f, maxForce);
-            Vector2 force = direction * strength;
 
             rb.linearVelocity = Vector2.zero;
-            rb.AddForce(force, ForceMode2D.Impulse);
+            rb.AddForce(direction * strength, ForceMode2D.Impulse);
         }
     }
 
+    // Cache velocity every physics step BEFORE Unity resolves any collision
+    void FixedUpdate()
+    {
+        _velocityBeforeCollision = rb.linearVelocity;
+    }
+
+    // -------------------------------------------------------------------------
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (!collision.gameObject.CompareTag("Wall")) return;
+
+        // Average all contact normals (handles corners correctly)
+        Vector2 normal = Vector2.zero;
+        for (int i = 0; i < collision.contactCount; i++)
+            normal += collision.GetContact(i).normal;
+        normal.Normalize();
+
+        // Reflect the PRE-collision velocity (not the post-collision zeroed one)
+        Vector2 reflected = Vector2.Reflect(_velocityBeforeCollision, normal) * bounciness;
+        rb.linearVelocity = reflected;
+    }
+
+    // -------------------------------------------------------------------------
     private void OnGravityChanged(Vector2 newGravityDirection)
     {
         float targetAngle = Vector2.SignedAngle(Vector2.down, newGravityDirection);
@@ -99,7 +127,7 @@ public class PlayerController : MonoBehaviour
         transform.rotation = target;
     }
 
-
+    // -------------------------------------------------------------------------
     public void Heal(int amount)
     {
         health += amount;
@@ -113,7 +141,6 @@ public class PlayerController : MonoBehaviour
     public void ApplyPowerUp(PowerUp powerUp)
     {
         currentItem = powerUp;
-
         StopAllCoroutines();
         StartCoroutine(PowerUpRoutine());
     }
@@ -127,22 +154,18 @@ public class PlayerController : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         ICollectible collectible = other.GetComponent<ICollectible>();
-
         if (collectible != null)
-        {
             collectible.OnCollect(this);
-        }
     }
 
     public void TakeDamage(int amount)
     {
-       if (isInvincible) return;
+        if (isInvincible) return;
 
         if (Time.time - lastDamageTime < damageCooldown)
             return;
 
         lastDamageTime = Time.time;
-
         health -= amount;
 
         if (health <= 0)
@@ -152,13 +175,8 @@ public class PlayerController : MonoBehaviour
     void Die()
     {
         Debug.Log("Player died");
-
-        // Disable movement
         rb.linearVelocity = Vector2.zero;
         rb.simulated = false;
-
-        // Optional: play animation, reload scene, etc.
         gameObject.SetActive(false);
     }
-
 }
