@@ -16,6 +16,16 @@ public class PlayerController : MonoBehaviour
     private Vector2 swipeStart;
     private bool isSwiping = false;
 
+    public int health = 100;
+
+    public PowerUp currentItem;
+    public float itemDuration = 5f;
+    public bool isInvincible = false;
+
+    private float damageCooldown = 0.5f;
+    private float lastDamageTime = -999f;
+
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -88,4 +98,67 @@ public class PlayerController : MonoBehaviour
         }
         transform.rotation = target;
     }
+
+
+    public void Heal(int amount)
+    {
+        health += amount;
+    }
+
+    public void AddScore(int amount)
+    {
+        Debug.Log("Score +" + amount);
+    }
+
+    public void ApplyPowerUp(PowerUp powerUp)
+    {
+        currentItem = powerUp;
+
+        StopAllCoroutines();
+        StartCoroutine(PowerUpRoutine());
+    }
+
+    private System.Collections.IEnumerator PowerUpRoutine()
+    {
+        yield return new WaitForSeconds(itemDuration);
+        currentItem = null;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        ICollectible collectible = other.GetComponent<ICollectible>();
+
+        if (collectible != null)
+        {
+            collectible.OnCollect(this);
+        }
+    }
+
+    public void TakeDamage(int amount)
+    {
+       if (isInvincible) return;
+
+        if (Time.time - lastDamageTime < damageCooldown)
+            return;
+
+        lastDamageTime = Time.time;
+
+        health -= amount;
+
+        if (health <= 0)
+            Die();
+    }
+
+    void Die()
+    {
+        Debug.Log("Player died");
+
+        // Disable movement
+        rb.linearVelocity = Vector2.zero;
+        rb.simulated = false;
+
+        // Optional: play animation, reload scene, etc.
+        gameObject.SetActive(false);
+    }
+
 }
