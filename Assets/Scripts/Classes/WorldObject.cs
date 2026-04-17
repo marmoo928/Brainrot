@@ -2,12 +2,8 @@ using UnityEngine;
 
 public abstract class WorldObject : MonoBehaviour
 {
-    [Header("Visual")]
-    public SpriteRenderer spriteRenderer;
-
-    protected virtual void Awake()
+    protected void CreateVisual(GameObject prefab)
     {
-        if (spriteRenderer == null)
-            spriteRenderer = GetComponent<SpriteRenderer>();
+        Instantiate(prefab, transform.position, Quaternion.identity, transform);
     }
 }

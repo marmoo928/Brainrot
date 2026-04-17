@@ -99,15 +99,16 @@ public class ObstacleSpawner : MonoBehaviour
     // -------------------------------------------------------------------------
     void SpawnObstacle()
     {
-        GameObject go = obstaclePrefabs != null && obstaclePrefabs.Length > 0
-            ? Instantiate(PickPrefab(), transform)
-            : CreateGeneratedBox();
+        if (obstaclePrefabs == null || obstaclePrefabs.Length == 0) return;
 
+        GameObject go = Instantiate(PickPrefab(), transform);
         go.transform.position = GetSpawnPosition();
 
         obstacles.Add(go);
 
-        // Add or configure the mover component
+        ISpawnable spawnable = go.GetComponent<ISpawnable>();
+        if (spawnable != null) spawnable.OnSpawn();
+
         ObstacleMover mover = go.GetComponent<ObstacleMover>();
         if (mover == null) mover = go.AddComponent<ObstacleMover>();
 
@@ -170,33 +171,33 @@ public class ObstacleSpawner : MonoBehaviour
     }
 
     // -------------------------------------------------------------------------
-    GameObject CreateGeneratedBox()
-    {
-        GameObject go = new GameObject("Obstacle_Box");
-        go.transform.SetParent(transform, true);
+    // GameObject CreateGeneratedBox()
+    // {
+    //     GameObject go = new GameObject("Obstacle_Box");
+    //     go.transform.SetParent(transform, true);
 
-        float w = Random.Range(minBoxSize.x, maxBoxSize.x);
-        float h = Random.Range(minBoxSize.y, maxBoxSize.y);
-        go.transform.localScale = new Vector3(w, h, 1f);
+    //     float w = Random.Range(minBoxSize.x, maxBoxSize.x);
+    //     float h = Random.Range(minBoxSize.y, maxBoxSize.y);
+    //     go.transform.localScale = new Vector3(w, h, 1f);
 
-        go.AddComponent<BoxCollider2D>();
+    //     go.AddComponent<BoxCollider2D>();
 
-        SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
-        sr.sprite = CreateWhiteSquareSprite();
-        sr.color  = randomizeColor 
-            ? new Color(Random.value, Random.value, Random.value) 
-            : boxColor;
+    //     SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
+    //     sr.sprite = CreateWhiteSquareSprite();
+    //     sr.color  = randomizeColor
+    //         ? new Color(Random.value, Random.value, Random.value)
+    //         : boxColor;
 
-        return go;
-    }
+    //     return go;
+    // }
 
-    static Sprite CreateWhiteSquareSprite()
-    {
-        Texture2D tex = new Texture2D(1, 1);
-        tex.SetPixel(0, 0, Color.white);
-        tex.Apply();
-        return Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
-    }
+    // static Sprite CreateWhiteSquareSprite()
+    // {
+    //     Texture2D tex = new Texture2D(1, 1);
+    //     tex.SetPixel(0, 0, Color.white);
+    //     tex.Apply();
+    //     return Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+    // }
 
     // -------------------------------------------------------------------------
     void OnDrawGizmosSelected()
