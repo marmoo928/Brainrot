@@ -26,9 +26,12 @@ public class PlayerController : MonoBehaviour
 
     public int health = 100;
 
-    public PowerUp currentItem;
+    public BreakType? currentItem = null;
     public float itemDuration = 5f;
     public bool isInvincible = false;
+
+    [Header("UI")]
+    public UnityEngine.UI.Image itemSlotUI;
 
     private float damageCooldown = 0.5f;
     private float lastDamageTime = -999f;
@@ -138,24 +141,25 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Score +" + amount);
     }
 
-    public void ApplyPowerUp(PowerUp powerUp)
-    {
-        currentItem = powerUp;
-        StopAllCoroutines();
-        StartCoroutine(PowerUpRoutine());
-    }
-
-    private System.Collections.IEnumerator PowerUpRoutine()
-    {
-        yield return new WaitForSeconds(itemDuration);
-        currentItem = null;
-    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        BreakableBox box = other.GetComponent<BreakableBox>();
+        if (box != null)
+        {
+            box.Break(this);
+            return;
+        }
+
         ICollectible collectible = other.GetComponent<ICollectible>();
         if (collectible != null)
             collectible.OnCollect(this);
+    }
+
+    public void ShowItem(Sprite sprite)
+    {
+        if (itemSlotUI != null)
+            itemSlotUI.sprite = sprite;
     }
 
     public void TakeDamage(int amount)
