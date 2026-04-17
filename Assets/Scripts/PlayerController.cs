@@ -6,7 +6,11 @@ public class PlayerController : MonoBehaviour
     [Header("Settings")]
     public float forceMultiplier = -2f;
     public float maxForce = 20f;
-    public float minSwipeDistance = 50f; 
+    public float minSwipeDistance = 50f;
+
+    [Header("Rotation Settings")]
+    [Tooltip("How fast the sprite rotates to align with gravity. Set to 0 for instant snap.")]
+    public float rotationSpeed = 10f;
 
     private Rigidbody2D rb;
     private Vector2 swipeStart;
@@ -15,6 +19,23 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        rb.freezeRotation = true;
+
+        // Grab the EnvironmentBehaviour from the parent and subscribe
+        EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
+        if (env != null)
+            env.onGravityChanged.AddListener(OnGravityChanged);
+        else
+            Debug.LogWarning("[PlayerController] No EnvironmentBehaviour found in parent.");
+    }
+
+    void OnDestroy()
+    {
+        // Clean up the listener to avoid stale references
+        EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
+        if (env != null)
+            env.onGravityChanged.RemoveListener(OnGravityChanged);
     }
 
     void Update()
@@ -33,13 +54,38 @@ public class PlayerController : MonoBehaviour
 
             if (swipeDelta.magnitude < minSwipeDistance) return;
 
-            // Normalizuj a škáluj silu
             Vector2 direction = swipeDelta.normalized;
             float strength = Mathf.Min(swipeDelta.magnitude * forceMultiplier / 100f, maxForce);
             Vector2 force = direction * strength;
 
-            rb.linearVelocity = Vector2.zero; 
+            rb.linearVelocity = Vector2.zero;
             rb.AddForce(force, ForceMode2D.Impulse);
         }
+    }
+
+    private void OnGravityChanged(Vector2 newGravityDirection)
+    {
+        float targetAngle = Vector2.SignedAngle(Vector2.down, newGravityDirection);
+        Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetAngle);
+
+        if (rotationSpeed <= 0f)
+        {
+            transform.rotation = targetRotation;
+        }
+        else
+        {
+            StopAllCoroutines();
+            StartCoroutine(RotateToRoutine(targetRotation));
+        }
+    }
+
+    private System.Collections.IEnumerator RotateToRoutine(Quaternion target)
+    {
+        while (Quaternion.Angle(transform.rotation, target) > 0.1f)
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, target, Time.deltaTime * rotationSpeed);
+            yield return null;
+        }
+        transform.rotation = target;
     }
 }
