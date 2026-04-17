@@ -4,9 +4,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Settings")]
-    public float forceMultiplier = 3f;
+    public float forceMultiplier = -2f;
     public float maxForce = 20f;
-    public float minSwipeDistance = 50f; // v pixeloch, aby sa ignorol náhodný klik
+    public float minSwipeDistance = 50f; 
 
     private Rigidbody2D rb;
     private Vector2 swipeStart;
@@ -29,16 +29,16 @@ public class PlayerController : MonoBehaviour
         {
             isSwiping = false;
             Vector2 swipeEnd = Input.mousePosition;
-            Vector2 swipeDelta = swipeEnd - swipeStart; // v pixeloch
+            Vector2 swipeDelta = swipeEnd - swipeStart;
 
-            if (swipeDelta.magnitude < minSwipeDistance) return; // príliš krátky swipe
+            if (swipeDelta.magnitude < minSwipeDistance) return;
 
             // Normalizuj a škáluj silu
             Vector2 direction = swipeDelta.normalized;
             float strength = Mathf.Min(swipeDelta.magnitude * forceMultiplier / 100f, maxForce);
             Vector2 force = direction * strength;
 
-            rb.linearVelocity = Vector2.zero; // reset predchádzajúcej rýchlosti
+            rb.linearVelocity = Vector2.zero; 
             rb.AddForce(force, ForceMode2D.Impulse);
         }
     }
