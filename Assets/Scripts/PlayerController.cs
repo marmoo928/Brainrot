@@ -24,27 +24,11 @@ public class PlayerController : MonoBehaviour
     // Cached velocity from the frame BEFORE collision — so we always reflect a real value
     private Vector2 _velocityBeforeCollision;
 
-    public int health = 25;
-    public int score = 0;
+    public int health = 100;
 
     public BreakType? currentItem = null;
-    public Sprite currentItemSprite = null;
+    public float itemDuration = 5f;
     public bool isInvincible = false;
-
-    public void SetItem(BreakType type, Sprite sprite)
-    {
-        currentItem = type;
-        currentItemSprite = sprite;
-        StopCoroutine(nameof(ClearItemRoutine));
-        StartCoroutine(nameof(ClearItemRoutine));
-    }
-
-    private System.Collections.IEnumerator ClearItemRoutine()
-    {
-        yield return new WaitForSeconds(5f);
-        currentItem = null;
-        currentItemSprite = null;
-    }
 
     [Header("UI")]
     public UnityEngine.UI.Image itemSlotUI;
@@ -154,10 +138,29 @@ public class PlayerController : MonoBehaviour
 
     public void AddScore(int amount)
     {
-        score += amount;
+        Debug.Log("Score +" + amount);
     }
 
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        BreakableBox box = other.GetComponent<BreakableBox>();
+        if (box != null)
+        {
+            box.Break(this);
+            return;
+        }
+
+        ICollectible collectible = other.GetComponent<ICollectible>();
+        if (collectible != null)
+            collectible.OnCollect(this);
+    }
+
+    public void ShowItem(Sprite sprite)
+    {
+        if (itemSlotUI != null)
+            itemSlotUI.sprite = sprite;
+    }
 
     public void TakeDamage(int amount)
     {

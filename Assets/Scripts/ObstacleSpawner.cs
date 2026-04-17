@@ -39,15 +39,9 @@ public class ObstacleSpawner : MonoBehaviour
     public Color boxColor = new Color(1f, 0.4f, 0.1f, 1f);
     public bool randomizeColor = false;
 
-    [Header("Health Spawn")]
-    public PlayerController player;
-    public GameObject healPrefab;
-    public int maxHealth = 100;
-
     // -------------------------------------------------------------------------
     private Vector2 _currentGravityDir = Vector2.down;
     private float _spawnTimer;
-    private float _healTimer;
     private int _lastPrefabIndex = -1;
     private float _lastSpawnT = -1f;
 
@@ -92,52 +86,13 @@ public class ObstacleSpawner : MonoBehaviour
     {
         _spawnTimer -= Time.deltaTime;
 
+        // Clean up null references (in case some were destroyed elsewhere)
         obstacles.RemoveAll(o => o == null);
 
         if (_spawnTimer <= 0f && obstacles.Count < maxObstacleCount)
         {
             SpawnObstacle();
             _spawnTimer = Random.Range(minSpawnDelay, maxSpawnDelay);
-        }
-
-        HandleHealSpawn();
-    }
-
-    void HandleHealSpawn()
-    {
-        if (_healTimer <= 0f)
-        { 
-            Debug.Log("Spawning heal, hp: " + (float)player.health / maxHealth);
-        }
-        if (player == null || healPrefab == null) return;
-
-        float hp = (float)player.health / maxHealth;
-
-        float interval = hp switch
-        {
-            > 0.75f => -1f,
-            > 0.50f => 10f,
-            > 0.25f => 7f,
-            > 0f    => 4f,
-            _       => -1f
-        };
-
-        if (interval < 0f) return;
-
-        _healTimer -= Time.deltaTime;
-        if (_healTimer <= 0f)
-        {
-            Vector3 spawnPos = GetSpawnPosition();
-            GameObject go = Instantiate(healPrefab, spawnPos, Quaternion.identity, transform);
-
-            ObstacleMover mover = go.GetComponent<ObstacleMover>();
-            if (mover == null) mover = go.AddComponent<ObstacleMover>();
-            mover.areaMin    = areaMin;
-            mover.areaMax    = areaMax;
-            mover.speed      = obstacleSpeed;
-            mover.gravityDir = _currentGravityDir;
-
-            _healTimer = interval;
         }
     }
 
@@ -150,6 +105,9 @@ public class ObstacleSpawner : MonoBehaviour
         go.transform.position = GetSpawnPosition();
 
         obstacles.Add(go);
+
+        ISpawnable spawnable = go.GetComponent<ISpawnable>();
+        if (spawnable != null) spawnable.OnSpawn();
 
         ObstacleMover mover = go.GetComponent<ObstacleMover>();
         if (mover == null) mover = go.AddComponent<ObstacleMover>();
