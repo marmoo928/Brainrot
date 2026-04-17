@@ -1,0 +1,4 @@
+repository "Brain rot/Brain rot@7972250529994@cloud"
+  path "/"
+    br "/main"
+    co "/main"
