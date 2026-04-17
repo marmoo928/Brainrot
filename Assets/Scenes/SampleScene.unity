@@ -154,6 +154,63 @@ Transform:
   - {fileID: 1384907880}
   m_Father: {fileID: 1260407378}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &226703560
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 226703561}
+  - component: {fileID: 226703562}
+  m_Layer: 0
+  m_Name: Items
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &226703561
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 226703560}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1756188892}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &226703562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 226703560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f07daae662b7a5044997c484669424b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemSpawner
+  player: {fileID: 1934155956}
+  healPrefab: {fileID: 5691534243712629609, guid: 484df350a8a25b94a88168af7788f58c, type: 3}
+  healThreshold: 0.6
+  minHealSpawnDelay: 5
+  maxHealSpawnDelay: 10
+  powerUpPrefabs:
+  - {fileID: 6402233045438724895, guid: c805b229aefddd548ac5399a6a8ecbd0, type: 3}
+  - {fileID: 908104647054301485, guid: 89e19a636e7e24541887e7e76a16feff, type: 3}
+  minPowerUpSpawnDelay: 10
+  maxPowerUpSpawnDelay: 20
+  areaMin: {x: -4.5, y: -3.45}
+  areaMax: {x: 4.5, y: 3.45}
+  maxHealth: 100
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -824,6 +881,7 @@ Transform:
   m_Children:
   - {fileID: 1934155955}
   - {fileID: 2001357952}
+  - {fileID: 226703561}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1756188893
