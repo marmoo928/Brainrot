@@ -124,7 +124,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -152,10 +152,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ae8323042ab99418b1bacac4840c5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableBox
-  linuxPrefab: {fileID: 6191055358934858305, guid: 8dd90db6f8a05d240a63d348f0a28050, type: 3}
-  pikoPrefab: {fileID: 5747734490921088074, guid: 4d8b3c9436ca73a409d15379b2224689, type: 3}
-  pikoChance: 20
-  type: 1
+  woodPrefab: {fileID: 1697822578255477888, guid: 43c208701aa81b34f9e86a86780420ab, type: 3}
+  steelPrefab: {fileID: 912274714304952188}
+  possibleItems:
+  - {fileID: 6191055358934858305, guid: 8dd90db6f8a05d240a63d348f0a28050, type: 3}
+  - {fileID: 5747734490921088074, guid: 4d8b3c9436ca73a409d15379b2224689, type: 3}
 --- !u!114 &6269249478189063230
 MonoBehaviour:
   m_ObjectHideFlags: 0
