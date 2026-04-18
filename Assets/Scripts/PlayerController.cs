@@ -217,6 +217,12 @@ public class PlayerController : MonoBehaviour
         if (audio != null) audio.PlayPowerup();
     }
 
+    public void PopBubbleSound()
+    {
+        AudioController audio = AudioController.Instance;
+        if (audio != null) audio.PlayBubblePop();
+    }
+
     public void TakeDamage(int amount)
     {
         if (isInvincible) return;
@@ -242,6 +248,7 @@ public class PlayerController : MonoBehaviour
         isInvincible = false;
         _invincibilityCoroutine = null;
         if (bubbleEffect != null) bubbleEffect.PopBubble();
+        PopBubbleSound();
     }
 
     void Die()
