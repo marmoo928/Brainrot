@@ -11,7 +11,7 @@ public class ScoreItem : MonoBehaviour
     {
         _col = GetComponent<Collider2D>();
         if (_col != null) _col.enabled = false;
-        Invoke(nameof(EnablePickup), 5.5f);
+        Invoke(nameof(EnablePickup), 1f);
     }
 
     void Update()

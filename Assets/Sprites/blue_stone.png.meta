@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f662d700177b4ed4080aa784cfdd149a
+guid: 577c96a526468484ca6eef48fe72403a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 9010745540985858718
-    second: h3-4_0
+      213: 4637623321679531459
+    second: blue_stone_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: h3-4_0
+      name: blue_stone_0
       rect:
         serializedVersion: 2
-        x: 83
-        y: 167
-        width: 224
-        height: 62
+        x: 0
+        y: 1
+        width: 160
+        height: 132
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e9aa5eb14599c0d70800000000000000
-      internalID: 9010745540985858718
+      spriteID: 3cd86c207d52c5040800000000000000
+      internalID: 4637623321679531459
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      h3-4_0: 9010745540985858718
+      blue_stone_0: 4637623321679531459
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

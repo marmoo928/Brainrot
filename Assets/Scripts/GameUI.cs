@@ -6,17 +6,20 @@ public class GameUI : MonoBehaviour
 {
     public PlayerController player;
 
-    public TMP_Text healthText;
     public TMP_Text scoreText;
     public Image itemImage;
 
+    [Header("Health Bar")]
+    public Image healthBarFill;
+    public int maxHealth = 25;
+
     void Update()
     {
-        if (healthText != null)
-            healthText.text = "HP: " + player.health;
-
         if (scoreText != null)
             scoreText.text = "Score: " + player.score;
+
+        if (healthBarFill != null)
+            healthBarFill.fillAmount = Mathf.Clamp01((float)player.health / maxHealth);
 
         if (itemImage != null)
         {

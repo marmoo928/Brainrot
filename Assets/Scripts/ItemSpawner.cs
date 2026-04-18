@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class ItemSpawner : MonoBehaviour
 {
@@ -14,9 +15,44 @@ public class ItemSpawner : MonoBehaviour
     public Vector2 areaMax = new Vector2(3f, 5f);
 
     private float _powerUpTimer = 20f;
+    private List<GameObject> _spawnedItems = new List<GameObject>();
+
+    void Start()
+    {
+        EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
+        if (env != null)
+            env.onGravityChanged.AddListener(OnGravityChanged);
+    }
+
+    void OnDestroy()
+    {
+        EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
+        if (env != null)
+            env.onGravityChanged.RemoveListener(OnGravityChanged);
+    }
+
+    void OnGravityChanged(Vector2 newDir)
+    {
+        // Zrus vsetky spawnute itemy
+        foreach (GameObject item in _spawnedItems)
+        {
+            if (item != null) Destroy(item);
+        }
+        _spawnedItems.Clear();
+
+        // Zrus aj volne lezace dropy zo sceny
+        foreach (var obj in FindObjectsByType<ScoreItem>(FindObjectsSortMode.None))
+            Destroy(obj.gameObject);
+        foreach (var obj in FindObjectsByType<Heal>(FindObjectsSortMode.None))
+            Destroy(obj.gameObject);
+        foreach (var obj in FindObjectsByType<PowerUp>(FindObjectsSortMode.None))
+            Destroy(obj.gameObject);
+    }
 
     void Update()
     {
+        _spawnedItems.RemoveAll(o => o == null);
+
         _powerUpTimer -= Time.deltaTime;
         if (_powerUpTimer > 0f) return;
 
@@ -31,6 +67,7 @@ public class ItemSpawner : MonoBehaviour
         if (prefab == null) return;
         float x = Random.Range(areaMin.x, areaMax.x);
         float y = Random.Range(areaMin.y, areaMax.y);
-        Instantiate(prefab, new Vector3(x, y, 0f), Quaternion.identity);
+        GameObject go = Instantiate(prefab, new Vector3(x, y, 0f), Quaternion.identity);
+        _spawnedItems.Add(go);
     }
 }
