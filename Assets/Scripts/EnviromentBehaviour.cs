@@ -1,8 +1,10 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// Randomly changes the gravity direction (up, down, left, right) at a configurable interval.
+/// Also broadcasts which WallSide is now "deadly" (the wall gravity pulls the player toward).
 /// Attach this script to any persistent GameObject in your scene (e.g. GameManager).
 /// </summary>
 public class EnvironmentBehaviour : MonoBehaviour
@@ -20,15 +22,18 @@ public class EnvironmentBehaviour : MonoBehaviour
 
     [Header("Events (optional)")]
     [Tooltip("Fired every time gravity changes. Passes the new direction as a Vector2.")]
-    public UnityEngine.Events.UnityEvent<Vector2> onGravityChanged;
+    public UnityEvent<Vector2> onGravityChanged;
+
+    [Tooltip("Fired every time gravity changes. Passes the WallSide the player will fall toward (i.e. the deadly wall).")]
+    public UnityEvent<WallIdentifier.WallSide> onDeadlyWallChanged;
 
     // The four possible gravity directions
     private static readonly Vector2[] Directions = new Vector2[]
     {
-        Vector2.down,   // Normal gravity
-        Vector2.up,     // Inverted gravity
-        Vector2.left,   // Left gravity
-        Vector2.right,  // Right gravity
+        Vector2.down,   // Normal gravity  → Bottom wall is deadly
+        Vector2.up,     // Inverted gravity → Top wall is deadly
+        Vector2.left,   // Left gravity    → Left wall is deadly
+        Vector2.right,  // Right gravity   → Right wall is deadly
     };
 
     private Vector2 _currentDirection;
@@ -75,10 +80,31 @@ public class EnvironmentBehaviour : MonoBehaviour
         _currentDirection = direction;
         Physics2D.gravity = direction * gravityStrength;
 
-        string label = DirectionLabel(direction);
-        Debug.Log($"[EnvironmentBehaviour] Gravity changed → {label} ({Physics2D.gravity})");
+        WallIdentifier.WallSide deadlySide = DirectionToDeadlyWall(direction);
+
+        Debug.Log($"[EnvironmentBehaviour] Gravity → {DirectionLabel(direction)} | Deadly wall: {deadlySide}");
 
         onGravityChanged?.Invoke(direction);
+        onDeadlyWallChanged?.Invoke(deadlySide);
+    }
+
+    // -------------------------------------------------------------------------
+    /// <summary>
+    /// Maps a gravity direction to the wall the player will be pulled into.
+    /// Down gravity → Bottom wall hurts, Up gravity → Top wall hurts, etc.
+    /// </summary>
+    private static WallIdentifier.WallSide DirectionToDeadlyWall(Vector2 dir)
+    {
+        if (dir == Vector2.down)  return WallIdentifier.WallSide.Bottom;
+        if (dir == Vector2.up)    return WallIdentifier.WallSide.Top;
+        if (dir == Vector2.left)  return WallIdentifier.WallSide.Left;
+        if (dir == Vector2.right) return WallIdentifier.WallSide.Right;
+
+        // Fallback for diagonal/custom gravity: pick the dominant axis
+        if (Mathf.Abs(dir.y) >= Mathf.Abs(dir.x))
+            return dir.y < 0 ? WallIdentifier.WallSide.Bottom : WallIdentifier.WallSide.Top;
+        else
+            return dir.x < 0 ? WallIdentifier.WallSide.Left : WallIdentifier.WallSide.Right;
     }
 
     // -------------------------------------------------------------------------

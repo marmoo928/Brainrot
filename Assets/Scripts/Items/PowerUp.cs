@@ -12,6 +12,7 @@ public class PowerUp : MonoBehaviour
         if (player == null) return;
         Sprite sprite = GetComponent<SpriteRenderer>()?.sprite;
         player.SetItem(canBreak, sprite);
+        player.CollectPowerupSound();
         Destroy(gameObject);
     }
 }
