@@ -1648,7 +1648,7 @@ MonoBehaviour:
   maxForce: 20
   minSwipeDistance: 50
   rotationSpeed: 10
-  bounciness: 0.305
+  bounciness: 0.8
   health: 25
   score: 0
   currentItemSprite: {fileID: 0}

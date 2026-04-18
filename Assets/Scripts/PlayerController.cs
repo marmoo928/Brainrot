@@ -103,17 +103,17 @@ public class PlayerController : MonoBehaviour
         _velocityBeforeCollision = rb.linearVelocity;
     }
 
-    // -------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (!collision.gameObject.CompareTag("Wall")) return;
-
+    
         // Average all contact normals (handles corners correctly)
         Vector2 normal = Vector2.zero;
         for (int i = 0; i < collision.contactCount; i++)
             normal += collision.GetContact(i).normal;
         normal.Normalize();
-
+    
         // Reflect the PRE-collision velocity (not the post-collision zeroed one)
         Vector2 reflected = Vector2.Reflect(_velocityBeforeCollision, normal) * bounciness;
         rb.linearVelocity = reflected;
