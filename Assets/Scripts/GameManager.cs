@@ -44,7 +44,6 @@ public class GameManager : MonoBehaviour
     public GameObject transitionPanel;
     public AudioSource voiceAudioSource;
     public RewardFlyIn[] rewardSlots;         // Sloty na motherboarde — kazdy ma RewardFlyIn komponent
-    public Image[] rewardSlots;
 
     [Header("Canvases")]
     public GameObject startMenuCanvas;   // drag StartMenu
@@ -128,18 +127,32 @@ public class GameManager : MonoBehaviour
         _inTransition = true;
         _currentLevel++;
 
+        AudioController audio = AudioController.Instance;
+        if (audio != null) audio.SetLevelTransition(true);
+
         SetGameplayPaused(true);
         obstacleSpawner.ClearAll();
 
         if (transitionPanel != null) transitionPanel.SetActive(true);
 
-        // 3. Animacia odmeny na motherboarde
+        // 3. Animacia odmeny na motherboarde + zvuk odmeny
         int rewardIndex = _currentLevel - 1;
         if (rewardSlots != null && rewardIndex < rewardSlots.Length && rewardSlots[rewardIndex] != null)
         {
             LevelConfig prev = levels[_currentLevel - 1];
             if (prev.rewardSprite != null)
                 rewardSlots[rewardIndex].PlayFlyIn(prev.rewardSprite);
+        }
+
+        if (audio != null)
+        {
+            switch (rewardIndex)
+            {
+                case 0: audio.PlayRewardKabel();   break;
+                case 1: audio.PlayRewardRamka();   break;
+                case 2: audio.PlayRewardGrafika(); break;
+                case 3: audio.PlayRewardCpu();     break;
+            }
         }
 
         float waitTime = 3f;
@@ -157,6 +170,7 @@ public class GameManager : MonoBehaviour
         ApplyLevel(_currentLevel);
         SetGameplayPaused(false);
 
+        if (audio != null) audio.SetLevelTransition(false);
         _inTransition = false;
     }
 

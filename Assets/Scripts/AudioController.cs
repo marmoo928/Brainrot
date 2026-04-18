@@ -18,6 +18,17 @@ public class AudioController : MonoBehaviour
     public AudioClip[] bubblePopClips;
     public AudioClip[] gravityChangeClips;
 
+    [Header("Box Break Clips")]
+    public AudioClip[] breakWoodClips;
+    public AudioClip[] breakSteelClips;
+    [Range(0f, 1f)] public float breakVolume = 1f;
+
+    [Header("Reward Clips")]
+    public AudioClip[] rewardKabelClips;
+    public AudioClip[] rewardRamkaClips;
+    public AudioClip[] rewardGrafikaClips;
+    public AudioClip[] rewardCpuClips;
+
     [Header("Volume")]
     [Range(0f, 1f)] public float hurtVolume         = 1f;
     [Range(0f, 1f)] public float powerupVolume       = 1f;
@@ -26,14 +37,26 @@ public class AudioController : MonoBehaviour
     [Range(0f, 1f)] public float buttonPressVolume   = 1f;
     [Range(0f, 1f)] public float bubbleVolume        = 1f;
     [Range(0f, 1f)] public float gravityChangeVolume = 1f;
+    [Range(0f, 1f)] public float rewardVolume        = 1f;
+
+    [Header("Game Start")]
+    [Tooltip("Zvuk ktory sa zapusti tesne pred spustenim hry (po kliknuti Play).")]
+    public AudioClip gameStartClip;
+    [Range(0f, 1f)] public float gameStartVolume = 1f;
 
     [Header("Background Music")]
-    public AudioClip musicClip;
-    [Range(0f, 1f)] public float musicVolume = 0.5f;
+    [Tooltip("Hudba ktora hraje na uvodnom menu.")]
+    public AudioClip menuMusicClip;
+    [Tooltip("Hudba ktora hraje pocas hry.")]
+    public AudioClip gameMusicClip;
+    [Range(0f, 1f)] public float menuMusicVolume = 0.5f;
+    [Range(0f, 1f)] public float gameMusicVolume = 0.5f;
 
     // ── Private ────────────────────────────────────────────────────────────────
     private AudioSource _source;
     private AudioSource _musicSource;
+    private bool _gameStarted = false;
+    private bool _inLevelTransition = false;
 
     private void Awake()
     {
@@ -49,21 +72,45 @@ public class AudioController : MonoBehaviour
         _source.playOnAwake = false;
 
         _musicSource = gameObject.AddComponent<AudioSource>();
-        _musicSource.clip = musicClip;
         _musicSource.loop = true;
-        _musicSource.volume = musicVolume;
         _musicSource.playOnAwake = false;
-        if (musicClip != null) _musicSource.Play();
+
+        // Spusti menu hudbu
+        if (menuMusicClip != null)
+        {
+            _musicSource.clip = menuMusicClip;
+            _musicSource.volume = menuMusicVolume;
+            _musicSource.Play();
+        }
     }
 
-
+    private void Start()
+    {
         EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
         if (env != null)
             env.onGravityChanged.AddListener(OnGravityChanged);
     }
 
+    /// <summary>Called by GameManager at start/end of level transition.</summary>
+    public void SetLevelTransition(bool active) => _inLevelTransition = active;
+
     /// <summary>Called by GameManager when the play button is pressed.</summary>
-    public void NotifyGameStarted() => _gameStarted = true;
+    public void NotifyGameStarted()
+    {
+        _gameStarted = true;
+
+        if (gameStartClip != null)
+            _source.PlayOneShot(gameStartClip, gameStartVolume);
+
+        // Prepni z menu hudby na game hudbu
+        _musicSource.Stop();
+        if (gameMusicClip != null)
+        {
+            _musicSource.clip = gameMusicClip;
+            _musicSource.volume = gameMusicVolume;
+            _musicSource.Play();
+        }
+    }
 
     public void PlayHurt()          => Play(hurtClips,          hurtVolume);
     public void PlayPowerup()       => Play(powerupClips,        powerupVolume);
@@ -72,9 +119,17 @@ public class AudioController : MonoBehaviour
     public void PlayButtonPress()   => Play(buttonPressClips,    buttonPressVolume);
     public void PlayBubblePop()     => Play(bubblePopClips,      bubbleVolume);
     public void PlayGravityChange() => Play(gravityChangeClips,  gravityChangeVolume);
+    public void PlayBreakWood()     => Play(breakWoodClips,      breakVolume);
+    public void PlayBreakSteel()    => Play(breakSteelClips,     breakVolume);
+    public void PlayRewardKabel()   => Play(rewardKabelClips,    rewardVolume,  ignoreTransition: true);
+    public void PlayRewardRamka()   => Play(rewardRamkaClips,    rewardVolume,  ignoreTransition: true);
+    public void PlayRewardGrafika() => Play(rewardGrafikaClips,  rewardVolume,  ignoreTransition: true);
+    public void PlayRewardCpu()     => Play(rewardCpuClips,      rewardVolume,  ignoreTransition: true);
 
-    private void Play(AudioClip[] clips, float volume)
+    private void Play(AudioClip[] clips, float volume, bool ignoreTransition = false)
     {
+        if (_inLevelTransition && !ignoreTransition) return;
+
         if (clips == null || clips.Length == 0)
         {
             Debug.LogWarning("[AudioController] Clip array is empty — assign clips in the Inspector.");
