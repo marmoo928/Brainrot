@@ -783,14 +783,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb1d7dc17a9b4f48a8c29b105594442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioController
-  hurtClip: {fileID: 8300000, guid: 427ffc6fd5733f8449e400b9bc6ef07a, type: 3}
-  powerupClip: {fileID: 8300000, guid: ab96c23ca3cdf8f4d8ddb3b4a81ee17f, type: 3}
-  scoreItemClip: {fileID: 8300000, guid: 292848f795a962d41b04b8518adc5720, type: 3}
-  healClip: {fileID: 8300000, guid: f259a4669996f9b4590cd2af680c3743, type: 3}
+  hurtClips:
+  - {fileID: 8300000, guid: 427ffc6fd5733f8449e400b9bc6ef07a, type: 3}
+  powerupClips:
+  - {fileID: 8300000, guid: ab96c23ca3cdf8f4d8ddb3b4a81ee17f, type: 3}
+  scoreItemClips:
+  - {fileID: 8300000, guid: 292848f795a962d41b04b8518adc5720, type: 3}
+  healClips:
+  - {fileID: 8300000, guid: f259a4669996f9b4590cd2af680c3743, type: 3}
+  bubblePopClip:
+  - {fileID: 8300000, guid: 8d9a942e86432da47a7fdc55e621100e, type: 3}
+  gravityChangeClip:
+  - {fileID: 8300000, guid: 3e08b9d97250e8246a569057f2df033e, type: 3}
   hurtVolume: 1
   powerupVolume: 1
   scoreItemVolume: 1
   healVolume: 1
+  bubbleVolume: 1
+  gravityChangeVolume: 1
 --- !u!1 &613649627
 GameObject:
   m_ObjectHideFlags: 0
@@ -1168,6 +1178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 972837266}
   - component: {fileID: 972837267}
+  - component: {fileID: 972837268}
   m_Layer: 0
   m_Name: WallLeft
   m_TagString: Wall
@@ -1496,6 +1507,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1384907880}
   - component: {fileID: 1384907881}
+  - component: {fileID: 1384907882}
   m_Layer: 0
   m_Name: WallBottom
   m_TagString: Wall
@@ -1931,7 +1943,7 @@ MonoBehaviour:
     - {fileID: 6402233045438724895, guid: c805b229aefddd548ac5399a6a8ecbd0, type: 3}
     - {fileID: 908104647054301485, guid: 89e19a636e7e24541887e7e76a16feff, type: 3}
     itemSpawnInterval: 7
-    voiceClip: {fileID: 0}
+    voiceClip: {fileID: 8300000, guid: 4e82fb5b42d6d8843bc6c8ba5b64b108, type: 3}
     rewardSprite: {fileID: 0}
   - levelName: Final
     scoreThreshold: 150
@@ -1950,7 +1962,7 @@ MonoBehaviour:
     - {fileID: 908104647054301485, guid: 89e19a636e7e24541887e7e76a16feff, type: 3}
     - {fileID: 6402233045438724895, guid: c805b229aefddd548ac5399a6a8ecbd0, type: 3}
     itemSpawnInterval: 7
-    voiceClip: {fileID: 0}
+    voiceClip: {fileID: 8300000, guid: 4e82fb5b42d6d8843bc6c8ba5b64b108, type: 3}
     rewardSprite: {fileID: 0}
   transitionPanel: {fileID: 0}
   voiceAudioSource: {fileID: 554933183}
