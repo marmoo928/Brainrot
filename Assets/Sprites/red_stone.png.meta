@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: b5139a4ec747f444baaac9543561124a
+guid: df2b5e871e1cc9d4c8a5701b57d54f77
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6195556049435053240
-    second: h1-4_0
+      213: 4894288030243528077
+    second: red_stone_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: h1-4_0
+      name: red_stone_0
       rect:
         serializedVersion: 2
-        x: 83
-        y: 155
-        width: 224
-        height: 62
+        x: 0
+        y: 7
+        width: 160
+        height: 151
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8bc4998c6690bf550800000000000000
-      internalID: 6195556049435053240
+      spriteID: d8d9c1f48010ce340800000000000000
+      internalID: 4894288030243528077
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      h1-4_0: 6195556049435053240
+      red_stone_0: 4894288030243528077
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5691534243712629609
+--- !u!1 &2790824204853007973
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,40 +8,42 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8535333120780524265}
-  - component: {fileID: 7120053224136376492}
-  - component: {fileID: 7844471911861243460}
-  - component: {fileID: 4846125751549107733}
+  - component: {fileID: 2446484748597677705}
+  - component: {fileID: 1680688232391385901}
+  - component: {fileID: 226033345156204316}
+  - component: {fileID: 6975143778060345062}
+  - component: {fileID: 270998192479513225}
+  - component: {fileID: 2674025405892875198}
   m_Layer: 0
-  m_Name: beer_0
+  m_Name: cirkularka_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8535333120780524265
+--- !u!4 &2446484748597677705
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5691534243712629609}
+  m_GameObject: {fileID: 2790824204853007973}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.309341, y: 3.2312405, z: 0}
-  m_LocalScale: {x: 0.24, y: 0.24, z: 0.24}
+  m_LocalPosition: {x: -8.029289, y: -1.8356233, z: 0}
+  m_LocalScale: {x: 1.72, y: 1.72, z: 1.72}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &7120053224136376492
+--- !u!212 &1680688232391385901
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5691534243712629609}
+  m_GameObject: {fileID: 2790824204853007973}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -83,36 +85,65 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 6779204642115704726, guid: b2dbcbd3768b5e54d83633fe73a79365, type: 3}
+  m_Sprite: {fileID: -3233351622896794397, guid: d20e2a2b2db36f04083e4aa4a6ad3de3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.6, y: 3.01}
+  m_Size: {x: 0.52, y: 0.52}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &7844471911861243460
+--- !u!114 &226033345156204316
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5691534243712629609}
+  m_GameObject: {fileID: 2790824204853007973}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbfcb2d3c110e9c44b71ab92a727e6b9, type: 3}
+  m_Script: {fileID: 11500000, guid: d5ae63c3bd3196a4e8ade7eff417b113, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Heal
-  amountToHeal: 25
---- !u!61 &4846125751549107733
+  m_EditorClassIdentifier: Assembly-CSharp::DamageObstacle
+  damage: 20
+--- !u!114 &6975143778060345062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2790824204853007973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf75d145eeaf49740a0e5789422ffffa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObstacleMover
+  gravityDir: {x: 0, y: -1}
+  speed: 3
+  areaMin: {x: 0, y: 0}
+  areaMax: {x: 0, y: 0}
+--- !u!114 &270998192479513225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2790824204853007973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de93ed30e1a12b94bb86637501f8fe32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Spin
+  spinSpeed: 360
+--- !u!61 &2674025405892875198
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5691534243712629609}
+  m_GameObject: {fileID: 2790824204853007973}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -136,7 +167,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -144,11 +175,11 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.6, y: 3.01}
-    newSize: {x: 2.6, y: 3.01}
+    oldSize: {x: 0.52, y: 0.52}
+    newSize: {x: 0.52, y: 0.52}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.6, y: 3.01}
+  m_Size: {x: 0.52, y: 0.52}
   m_EdgeRadius: 0

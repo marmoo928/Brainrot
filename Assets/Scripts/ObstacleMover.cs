@@ -13,32 +13,36 @@ public class ObstacleMover : MonoBehaviour
 
     void Update()
     {
+        float angle = Vector2.SignedAngle(Vector2.down, gravityDir);
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
+
         transform.Translate(gravityDir * speed * Time.deltaTime, Space.World);
 
         Vector2 pos = transform.position;
-        float margin = 0.1f; // small buffer
 
-        if (ShouldDestroy(pos, margin))
-        {
+        // Pouzijeme skutocnu velkost spriteu aby box zmizol presne na hranici
+        Renderer r = GetComponent<Renderer>();
+        float halfW = r != null ? r.bounds.extents.x : 0f;
+        float halfH = r != null ? r.bounds.extents.y : 0f;
+
+        if (ShouldDestroy(pos, halfW, halfH))
             Destroy(gameObject);
-        }
     }
 
-    bool ShouldDestroy(Vector2 pos, float margin)
+    bool ShouldDestroy(Vector2 pos, float halfW, float halfH)
     {
-        // Check based on movement direction ONLY
-
+        // Destroy az ked cely box prejde za hranicu (zadna hrana)
         if (Vector2.Dot(gravityDir, Vector2.down) > 0.9f)
-            return pos.y < areaMin.y - margin;
+            return pos.y + halfH < areaMin.y;
 
         if (Vector2.Dot(gravityDir, Vector2.up) > 0.9f)
-            return pos.y > areaMax.y + margin;
+            return pos.y - halfH > areaMax.y;
 
         if (Vector2.Dot(gravityDir, Vector2.left) > 0.9f)
-            return pos.x < areaMin.x - margin;
+            return pos.x + halfW < areaMin.x;
 
         if (Vector2.Dot(gravityDir, Vector2.right) > 0.9f)
-            return pos.x > areaMax.x + margin;
+            return pos.x - halfW > areaMax.x;
 
         return false;
     }

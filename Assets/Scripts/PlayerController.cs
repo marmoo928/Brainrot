@@ -39,6 +39,13 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(nameof(ClearItemRoutine));
     }
 
+    public void ClearItem()
+    {
+        StopCoroutine(nameof(ClearItemRoutine));
+        currentItem = null;
+        currentItemSprite = null;
+    }
+
     private System.Collections.IEnumerator ClearItemRoutine()
     {
         yield return new WaitForSeconds(5f);
