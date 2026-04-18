@@ -23,50 +23,63 @@ public class LevelConfig
     public float itemSpawnInterval = 10f;
 
     [Header("Transition")]
-    public AudioClip voiceClip;       // placeholder — doplnit nadabing
-    public Sprite rewardSprite;       // PNG suciastky pre motherboard
+    public AudioClip voiceClip;
+    public Sprite rewardSprite;
 }
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    [Header("References")]
+    [Header("References — drag from scene root")]
     public PlayerController player;
-    public ObstacleSpawner obstacleSpawner;
-    public ItemSpawner itemSpawner;
-    public EnvironmentBehaviour environment;
+    public ObstacleSpawner obstacleSpawner;   // drag Obstacles GameObject
+    public ItemSpawner itemSpawner;           // drag Items GameObject
+    public EnvironmentBehaviour environment;  // drag Environment/GameManager... or the object EnvironmentBehaviour is on
 
     [Header("Levels")]
     public LevelConfig[] levels;
 
     [Header("Transition UI")]
-    public GameObject transitionPanel;        // Panel ktory sa ukaze pocas pauzy
-    public AudioSource voiceAudioSource;      // AudioSource pre nadabing
-    public Image[] rewardSlots;               // Sloty na motherboarde pre suciastky
+    public GameObject transitionPanel;
+    public AudioSource voiceAudioSource;
+    public Image[] rewardSlots;
+
+    [Header("Canvases")]
+    public GameObject startMenuCanvas;   // drag StartMenu
+    public GameObject hudCanvas;         // drag HUD
 
     // -------------------------------------------------------------------------
     private int _currentLevel = 0;
     private bool _inTransition = false;
+    private bool _gameStarted = false;
 
     // -------------------------------------------------------------------------
     void Awake()
     {
         if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        else { Destroy(gameObject); return; }
+    }
 
-        if (transitionPanel != null) transitionPanel.SetActive(false);
+    void Start()
+    {
+        // Show start menu, hide HUD
+        if (startMenuCanvas != null) startMenuCanvas.SetActive(true);
+        if (hudCanvas != null)       hudCanvas.SetActive(false);
+
         ApplyLevel(0);
+
+        // Pause after ApplyLevel so spawners are configured before being paused
+        SetGameplayPaused(true);
+
+        Debug.Log("[GameManager] Start menu shown, gameplay paused.");
     }
 
     void Update()
     {
-        if (player == null) { Debug.LogWarning("[GameManager] Player je null!"); return; }
-        if (levels == null || levels.Length == 0) { Debug.LogWarning("[GameManager] Levels nie su nastavene!"); return; }
-        if (_inTransition) return;
+        if (!_gameStarted || _inTransition) return;
+        if (player == null || levels == null || levels.Length == 0) return;
         if (_currentLevel >= levels.Length - 1) return;
-
-        Debug.Log($"[GameManager] Score: {player.score} | Next threshold: {levels[_currentLevel + 1].scoreThreshold} | Level: {_currentLevel}");
 
         if (player.score >= levels[_currentLevel + 1].scoreThreshold)
         {
@@ -75,22 +88,50 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // -------------------------------------------------------------------------
+    // ── Called by PlayButtonScript ────────────────────────────────────────────
+    public void StartGame()
+    {
+        if (_gameStarted) return;
+
+        if (startMenuCanvas != null) startMenuCanvas.SetActive(false);
+        if (hudCanvas != null)       hudCanvas.SetActive(true);
+
+        SetGameplayPaused(false);
+        _gameStarted = true;
+        AudioController audioController = AudioController.Instance;
+        if (audioController != null) audioController.NotifyGameStarted();
+        Debug.Log("[GameManager] Game started.");
+    }
+
+    // ── Pause helper ──────────────────────────────────────────────────────────
+    private void SetGameplayPaused(bool paused)
+    {
+        if (obstacleSpawner != null) obstacleSpawner.SetPaused(paused);
+        else Debug.LogWarning("[GameManager] obstacleSpawner is null!");
+
+        if (itemSpawner != null) itemSpawner.SetPaused(paused);
+        else Debug.LogWarning("[GameManager] itemSpawner is null!");
+
+        if (environment != null) environment.SetPaused(paused);
+        else Debug.LogWarning("[GameManager] environment is null!");
+
+        Debug.Log($"[GameManager] Gameplay paused={paused}");
+
+        if (player != null) player.GetComponent<Rigidbody2D>().simulated = !paused;
+        if (player != null) player.isInvincible = paused;
+    }
+
+    // ── Level Transition ──────────────────────────────────────────────────────
     private IEnumerator LevelTransition()
     {
         _inTransition = true;
         _currentLevel++;
 
-        // 1. Pauza — zastav vsetko
-        obstacleSpawner.SetPaused(true);
-        itemSpawner.SetPaused(true);
-        environment.SetPaused(true);
+        SetGameplayPaused(true);
         obstacleSpawner.ClearAll();
 
-        // 2. Zobraz panel
         if (transitionPanel != null) transitionPanel.SetActive(true);
 
-        // 3. Zobraz odmenu na motherboarde
         int rewardIndex = _currentLevel - 1;
         if (rewardSlots != null && rewardIndex < rewardSlots.Length && rewardSlots[rewardIndex] != null)
         {
@@ -102,7 +143,6 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // 4. Prehraj nadabing (placeholder — AudioClip priradit v Inspektore)
         float waitTime = 3f;
         if (voiceAudioSource != null && levels[_currentLevel].voiceClip != null)
         {
@@ -113,23 +153,18 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(waitTime);
 
-        // 5. Skry panel a aplikuj novy level
         if (transitionPanel != null) transitionPanel.SetActive(false);
 
         ApplyLevel(_currentLevel);
-
-        obstacleSpawner.SetPaused(false);
-        itemSpawner.SetPaused(false);
-        environment.SetPaused(false);
+        SetGameplayPaused(false);
 
         _inTransition = false;
     }
 
-    // -------------------------------------------------------------------------
+    // ── Apply Level ───────────────────────────────────────────────────────────
     private void ApplyLevel(int index)
     {
         LevelConfig cfg = levels[index];
-
         obstacleSpawner.Configure(cfg.obstacleSpeed, cfg.obstaclePrefabs);
         itemSpawner.Configure(cfg.itemPrefabs, cfg.itemSpawnInterval);
         environment.Configure(cfg.gravityMode, cfg.gravityStrength, cfg.gravityMinInterval, cfg.gravityMaxInterval);

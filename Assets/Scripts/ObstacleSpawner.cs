@@ -50,12 +50,12 @@ public class ObstacleSpawner : MonoBehaviour
     private float _healTimer;
     private int _lastPrefabIndex = -1;
     private float _lastSpawnT = -1f;
-    private bool _isPaused = false;
+    private bool _isPaused = true;
 
     private List<GameObject> obstacles = new List<GameObject>();
     // -------------------------------------------------------------------------
 
-    void Start()
+    void Awake()
     {
         _spawnTimer = Random.Range(minSpawnDelay, maxSpawnDelay);
 
@@ -106,6 +106,7 @@ public class ObstacleSpawner : MonoBehaviour
 
     void Update()
     {
+        Debug.Log($"[ObstacleSpawner] isPaused={_isPaused}");
         if (_isPaused) return;
 
         _spawnTimer -= Time.deltaTime;
