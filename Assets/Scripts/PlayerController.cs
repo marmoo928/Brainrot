@@ -17,12 +17,26 @@ public class PlayerController : MonoBehaviour
     [Range(0f, 1f)]
     public float bounciness = 0.8f;
 
+    [Header("Deadly Wall")]
+    [Tooltip("Damage dealt when the player hits the wall gravity pulls them toward.")]
+    public int deadlyWallDamage = 5;
+    [Tooltip("Cooldown in seconds between deadly-wall hits (independent of normal damage cooldown).")]
+    public float deadlyWallDamageCooldown = 0.5f;
+
+    [Header("Invincibility Frames")]
+    [Tooltip("How long the player is invincible after taking any damage.")]
+    public float iFrameDuration = 2f;
+
     private Rigidbody2D rb;
     private Vector2 swipeStart;
     private bool isSwiping = false;
 
-    // Cached velocity from the frame BEFORE collision — so we always reflect a real value
+    // Cached velocity from the frame BEFORE collision
     private Vector2 _velocityBeforeCollision;
+
+    // Which wall side is currently deadly (set by EnvironmentBehaviour event)
+    private WallIdentifier.WallSide _deadlyWallSide = WallIdentifier.WallSide.Bottom;
+    private float _lastDeadlyWallHitTime = -999f;
 
     public int health = 25;
     public int score = 0;
@@ -31,12 +45,17 @@ public class PlayerController : MonoBehaviour
     public Sprite currentItemSprite = null;
     public bool isInvincible = false;
 
+    // Tracked individually so StopAllCoroutines() is never needed
+    private Coroutine _rotationCoroutine;
+    private Coroutine _invincibilityCoroutine;
+    private Coroutine _clearItemCoroutine;
+
     public void SetItem(BreakType type, Sprite sprite)
     {
         currentItem = type;
         currentItemSprite = sprite;
-        StopCoroutine(nameof(ClearItemRoutine));
-        StartCoroutine(nameof(ClearItemRoutine));
+        if (_clearItemCoroutine != null) StopCoroutine(_clearItemCoroutine);
+        _clearItemCoroutine = StartCoroutine(ClearItemRoutine());
     }
 
     public void ClearItem()
@@ -51,13 +70,11 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(5f);
         currentItem = null;
         currentItemSprite = null;
+        _clearItemCoroutine = null;
     }
 
     [Header("UI")]
     public UnityEngine.UI.Image itemSlotUI;
-
-    private float damageCooldown = 0.5f;
-    private float lastDamageTime = -999f;
 
     // -------------------------------------------------------------------------
     void Awake()
@@ -67,16 +84,24 @@ public class PlayerController : MonoBehaviour
 
         EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
         if (env != null)
+        {
             env.onGravityChanged.AddListener(OnGravityChanged);
+            env.onDeadlyWallChanged.AddListener(OnDeadlyWallChanged);
+        }
         else
+        {
             Debug.LogWarning("[PlayerController] No EnvironmentBehaviour found in parent.");
+        }
     }
 
     void OnDestroy()
     {
         EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
         if (env != null)
+        {
             env.onGravityChanged.RemoveListener(OnGravityChanged);
+            env.onDeadlyWallChanged.RemoveListener(OnDeadlyWallChanged);
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -104,26 +129,35 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Cache velocity every physics step BEFORE Unity resolves any collision
     void FixedUpdate()
     {
         _velocityBeforeCollision = rb.linearVelocity;
     }
 
-    //-------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (!collision.gameObject.CompareTag("Wall")) return;
-    
-        // Average all contact normals (handles corners correctly)
+
+        // --- Bounce ---
         Vector2 normal = Vector2.zero;
         for (int i = 0; i < collision.contactCount; i++)
             normal += collision.GetContact(i).normal;
         normal.Normalize();
-    
-        // Reflect the PRE-collision velocity (not the post-collision zeroed one)
+
         Vector2 reflected = Vector2.Reflect(_velocityBeforeCollision, normal) * bounciness;
         rb.linearVelocity = reflected;
+
+        // --- Deadly wall check ---
+        WallIdentifier wall = collision.gameObject.GetComponent<WallIdentifier>();
+        if (wall != null && wall.side == _deadlyWallSide)
+        {
+            if (Time.time - _lastDeadlyWallHitTime >= deadlyWallDamageCooldown)
+            {
+                _lastDeadlyWallHitTime = Time.time;
+                TakeDamage(deadlyWallDamage);
+            }
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -138,9 +172,16 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            StopAllCoroutines();
-            StartCoroutine(RotateToRoutine(targetRotation));
+            // Only stop and restart the rotation coroutine — nothing else
+            if (_rotationCoroutine != null) StopCoroutine(_rotationCoroutine);
+            _rotationCoroutine = StartCoroutine(RotateToRoutine(targetRotation));
         }
+    }
+
+    private void OnDeadlyWallChanged(WallIdentifier.WallSide deadlySide)
+    {
+        _deadlyWallSide = deadlySide;
+        Debug.Log($"[PlayerController] Deadly wall is now: {deadlySide}");
     }
 
     private System.Collections.IEnumerator RotateToRoutine(Quaternion target)
@@ -151,33 +192,53 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         transform.rotation = target;
+        _rotationCoroutine = null;
     }
 
     // -------------------------------------------------------------------------
     public void Heal(int amount)
     {
         health += amount;
+        AudioController audio = AudioController.Instance;
+        if (audio != null) audio.PlayHeal();
     }
 
     public void AddScore(int amount)
     {
         score += amount;
+        AudioController audio = AudioController.Instance;
+        if (audio != null) audio.PlayScoreItem();
     }
 
-
+    public void CollectPowerupSound()
+    {
+        AudioController audio = AudioController.Instance;
+        if (audio != null) audio.PlayPowerup();
+    }
 
     public void TakeDamage(int amount)
     {
         if (isInvincible) return;
 
-        if (Time.time - lastDamageTime < damageCooldown)
-            return;
-
-        lastDamageTime = Time.time;
         health -= amount;
+
+        AudioController audio = AudioController.Instance;
+        if (audio != null) audio.PlayHurt();
+
+        // Restart i-frames (cancel any existing ones first)
+        if (_invincibilityCoroutine != null) StopCoroutine(_invincibilityCoroutine);
+        _invincibilityCoroutine = StartCoroutine(InvincibilityRoutine());
 
         if (health <= 0)
             Die();
+    }
+
+    private System.Collections.IEnumerator InvincibilityRoutine()
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(iFrameDuration);
+        isInvincible = false;
+        _invincibilityCoroutine = null;
     }
 
     void Die()
