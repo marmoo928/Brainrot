@@ -50,6 +50,7 @@ public class ObstacleSpawner : MonoBehaviour
     private float _healTimer;
     private int _lastPrefabIndex = -1;
     private float _lastSpawnT = -1f;
+    private bool _isPaused = false;
 
     private List<GameObject> obstacles = new List<GameObject>();
     // -------------------------------------------------------------------------
@@ -88,8 +89,25 @@ public class ObstacleSpawner : MonoBehaviour
     }
 
     // -------------------------------------------------------------------------
+    public void SetPaused(bool paused) => _isPaused = paused;
+
+    public void Configure(float speed, GameObject[] prefabs)
+    {
+        obstacleSpeed = speed;
+        obstaclePrefabs = prefabs;
+    }
+
+    public void ClearAll()
+    {
+        foreach (GameObject obs in obstacles)
+            if (obs != null) Destroy(obs);
+        obstacles.Clear();
+    }
+
     void Update()
     {
+        if (_isPaused) return;
+
         _spawnTimer -= Time.deltaTime;
 
         obstacles.RemoveAll(o => o == null);

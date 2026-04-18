@@ -7,6 +7,8 @@ using UnityEngine.Events;
 /// Also broadcasts which WallSide is now "deadly" (the wall gravity pulls the player toward).
 /// Attach this script to any persistent GameObject in your scene (e.g. GameManager).
 /// </summary>
+public enum GravityMode { Off, UpDown, AllFourSequential, AllFourRandom }
+
 public class EnvironmentBehaviour : MonoBehaviour
 {
     [Header("Gravity Settings")]
@@ -27,16 +29,13 @@ public class EnvironmentBehaviour : MonoBehaviour
     [Tooltip("Fired every time gravity changes. Passes the WallSide the player will fall toward (i.e. the deadly wall).")]
     public UnityEvent<WallIdentifier.WallSide> onDeadlyWallChanged;
 
-    // The four possible gravity directions
-    private static readonly Vector2[] Directions = new Vector2[]
-    {
-        Vector2.down,   // Normal gravity  → Bottom wall is deadly
-        Vector2.up,     // Inverted gravity → Top wall is deadly
-        Vector2.left,   // Left gravity    → Left wall is deadly
-        Vector2.right,  // Right gravity   → Right wall is deadly
-    };
+    private static readonly Vector2[] AllDirections = { Vector2.down, Vector2.up, Vector2.left, Vector2.right };
+    private static readonly Vector2[] UpDownDirections = { Vector2.down, Vector2.up };
 
     private Vector2 _currentDirection;
+    private GravityMode _gravityMode = GravityMode.Off;
+    private bool _isPaused = false;
+    private int _sequentialIndex = 0;
 
     // -------------------------------------------------------------------------
     private void Start()
@@ -54,23 +53,46 @@ public class EnvironmentBehaviour : MonoBehaviour
             float waitTime = Random.Range(minInterval, maxInterval);
             yield return new WaitForSeconds(waitTime);
 
-            Vector2 newDirection = PickNewDirection();
-            ApplyGravity(newDirection);
+            if (_isPaused || _gravityMode == GravityMode.Off) continue;
+
+            ApplyGravity(PickNewDirection());
         }
     }
 
-    // -------------------------------------------------------------------------
-    /// <summary>Picks a random direction that is different from the current one.</summary>
     private Vector2 PickNewDirection()
     {
-        Vector2 chosen;
-        do
+        switch (_gravityMode)
         {
-            chosen = Directions[Random.Range(0, Directions.Length)];
-        }
-        while (chosen == _currentDirection);
+            case GravityMode.UpDown:
+                return _currentDirection == Vector2.down ? Vector2.up : Vector2.down;
 
-        return chosen;
+            case GravityMode.AllFourSequential:
+                _sequentialIndex = (_sequentialIndex + 1) % AllDirections.Length;
+                return AllDirections[_sequentialIndex];
+
+            case GravityMode.AllFourRandom:
+                Vector2 chosen;
+                do { chosen = AllDirections[Random.Range(0, AllDirections.Length)]; }
+                while (chosen == _currentDirection);
+                return chosen;
+
+            default:
+                return _currentDirection;
+        }
+    }
+
+    public void Configure(GravityMode mode, float strength, float minInt, float maxInt)
+    {
+        _gravityMode = mode;
+        gravityStrength = strength;
+        minInterval = minInt;
+        maxInterval = maxInt;
+        Physics2D.gravity = _currentDirection * gravityStrength;
+    }
+
+    public void SetPaused(bool paused)
+    {
+        _isPaused = paused;
     }
 
     // -------------------------------------------------------------------------

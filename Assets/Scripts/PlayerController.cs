@@ -75,6 +75,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("UI")]
     public UnityEngine.UI.Image itemSlotUI;
+    public BubbleEffect bubbleEffect;
 
     // -------------------------------------------------------------------------
     void Awake()
@@ -236,9 +237,11 @@ public class PlayerController : MonoBehaviour
     private System.Collections.IEnumerator InvincibilityRoutine()
     {
         isInvincible = true;
+        if (bubbleEffect != null) bubbleEffect.ShowBubble();
         yield return new WaitForSeconds(iFrameDuration);
         isInvincible = false;
         _invincibilityCoroutine = null;
+        if (bubbleEffect != null) bubbleEffect.PopBubble();
     }
 
     void Die()

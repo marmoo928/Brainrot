@@ -791,6 +791,97 @@ MonoBehaviour:
   powerupVolume: 1
   scoreItemVolume: 1
   healVolume: 1
+--- !u!1 &613649627
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 613649629}
+  - component: {fileID: 613649628}
+  m_Layer: 0
+  m_Name: palm_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!212 &613649628
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 613649627}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 7911854989986141159, guid: 9df1d2113d15118438dbac3dc7f10520, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1.7, y: 2.04}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+--- !u!4 &613649629
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 613649627}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -4.79963, y: -3.76909, z: 0}
+  m_LocalScale: {x: 3.6521, y: 2.9682, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1756188892}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -954,6 +1045,119 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &967192443
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 967192444}
+  - component: {fileID: 967192446}
+  - component: {fileID: 967192445}
+  m_Layer: 0
+  m_Name: BubbleEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &967192444
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967192443}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.67, y: 0.67, z: 0.67}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 1934155955}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &967192445
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967192443}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 4294967295
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 2
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &967192446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967192443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915a69b6325706643b90e3edfb3e7115, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BubbleEffect
+  bubbleRenderer: {fileID: 967192445}
+  bubbleSprite: {fileID: -8213064778517050661, guid: 4aceb1e19b5454140a3fd5799f77ac82, type: 3}
+  popFrames:
+  - {fileID: -8213064778517050661, guid: 4aceb1e19b5454140a3fd5799f77ac82, type: 3}
+  - {fileID: -1115033492164247591, guid: b4300c79ef03ba0499a3b2fb557dce71, type: 3}
+  - {fileID: -6861607790217423867, guid: 7a805c4118284d6478d04e2328f35c09, type: 3}
+  - {fileID: 2493490373125027453, guid: 5d627e11cb853ad4caa6bfe54d730b34, type: 3}
+  popFPS: 12
+  bubbleAlpha: 0.342
 --- !u!1 &972837265
 GameObject:
   m_ObjectHideFlags: 0
@@ -964,7 +1168,6 @@ GameObject:
   m_Component:
   - component: {fileID: 972837266}
   - component: {fileID: 972837267}
-  - component: {fileID: 972837268}
   m_Layer: 0
   m_Name: WallLeft
   m_TagString: Wall
@@ -1280,7 +1483,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1384907880}
   - component: {fileID: 1384907881}
-  - component: {fileID: 1384907882}
   m_Layer: 0
   m_Name: WallBottom
   m_TagString: Wall
@@ -1607,6 +1809,126 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WallIdentifier
   side: 3
+--- !u!1 &1680660554
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1680660555}
+  - component: {fileID: 1680660556}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1680660555
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1680660554}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1756188892}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1680660556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1680660554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1750648424702a84b95fb7706b1a914d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  player: {fileID: 1934155956}
+  obstacleSpawner: {fileID: 2001357953}
+  itemSpawner: {fileID: 63727553}
+  environment: {fileID: 1756188893}
+  levels:
+  - levelName: Ez
+    scoreThreshold: 0
+    obstaclePrefabs:
+    - {fileID: 1697822578255477888, guid: 43c208701aa81b34f9e86a86780420ab, type: 3}
+    obstacleSpeed: 1
+    gravityMode: 0
+    gravityStrength: 5
+    gravityMinInterval: 0
+    gravityMaxInterval: 0
+    itemPrefabs:
+    - {fileID: 908104647054301485, guid: 89e19a636e7e24541887e7e76a16feff, type: 3}
+    itemSpawnInterval: 6
+    voiceClip: {fileID: 0}
+    rewardSprite: {fileID: 0}
+  - levelName: Mid
+    scoreThreshold: 50
+    obstaclePrefabs:
+    - {fileID: 1697822578255477888, guid: 43c208701aa81b34f9e86a86780420ab, type: 3}
+    - {fileID: 912274714304952188, guid: 881e0999589eb684e82ed434d24cf7ad, type: 3}
+    - {fileID: 2790824204853007973, guid: 659be105b223e6b4ca21761d43b20963, type: 3}
+    obstacleSpeed: 2
+    gravityMode: 1
+    gravityStrength: 5
+    gravityMinInterval: 10
+    gravityMaxInterval: 20
+    itemPrefabs:
+    - {fileID: 6402233045438724895, guid: c805b229aefddd548ac5399a6a8ecbd0, type: 3}
+    - {fileID: 908104647054301485, guid: 89e19a636e7e24541887e7e76a16feff, type: 3}
+    itemSpawnInterval: 7
+    voiceClip: {fileID: 8300000, guid: 4e82fb5b42d6d8843bc6c8ba5b64b108, type: 3}
+    rewardSprite: {fileID: 0}
+  - levelName: Hard
+    scoreThreshold: 100
+    obstaclePrefabs:
+    - {fileID: 1697822578255477888, guid: 43c208701aa81b34f9e86a86780420ab, type: 3}
+    - {fileID: 912274714304952188, guid: 881e0999589eb684e82ed434d24cf7ad, type: 3}
+    - {fileID: 2790824204853007973, guid: 659be105b223e6b4ca21761d43b20963, type: 3}
+    - {fileID: 436726687337977356, guid: af6bf07e4342483479fa4ce1f4d943b4, type: 3}
+    obstacleSpeed: 3
+    gravityMode: 2
+    gravityStrength: 9
+    gravityMinInterval: 10
+    gravityMaxInterval: 12
+    itemPrefabs:
+    - {fileID: 6402233045438724895, guid: c805b229aefddd548ac5399a6a8ecbd0, type: 3}
+    - {fileID: 908104647054301485, guid: 89e19a636e7e24541887e7e76a16feff, type: 3}
+    itemSpawnInterval: 7
+    voiceClip: {fileID: 0}
+    rewardSprite: {fileID: 0}
+  - levelName: Final
+    scoreThreshold: 150
+    obstaclePrefabs:
+    - {fileID: 1697822578255477888, guid: 43c208701aa81b34f9e86a86780420ab, type: 3}
+    - {fileID: 912274714304952188, guid: 881e0999589eb684e82ed434d24cf7ad, type: 3}
+    - {fileID: 8235293730652810643, guid: 5acc979115af1024ba33aff46f2fc915, type: 3}
+    - {fileID: 436726687337977356, guid: af6bf07e4342483479fa4ce1f4d943b4, type: 3}
+    - {fileID: 2790824204853007973, guid: 659be105b223e6b4ca21761d43b20963, type: 3}
+    obstacleSpeed: 4
+    gravityMode: 3
+    gravityStrength: 12
+    gravityMinInterval: 9
+    gravityMaxInterval: 10
+    itemPrefabs:
+    - {fileID: 908104647054301485, guid: 89e19a636e7e24541887e7e76a16feff, type: 3}
+    - {fileID: 6402233045438724895, guid: c805b229aefddd548ac5399a6a8ecbd0, type: 3}
+    itemSpawnInterval: 7
+    voiceClip: {fileID: 0}
+    rewardSprite: {fileID: 0}
+  transitionPanel: {fileID: 0}
+  voiceAudioSource: {fileID: 554933183}
+  rewardSlots: []
 --- !u!1 &1756188891
 GameObject:
   m_ObjectHideFlags: 0
@@ -1637,6 +1959,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1680660555}
   - {fileID: 1260407378}
   - {fileID: 1934155955}
   - {fileID: 2001357952}
@@ -1644,6 +1967,7 @@ Transform:
   - {fileID: 1250252955}
   - {fileID: 217011528}
   - {fileID: 554933182}
+  - {fileID: 613649629}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1756188893
@@ -1865,6 +2189,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1627647945}
+  - {fileID: 967192444}
   m_Father: {fileID: 1756188892}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1934155956
@@ -1884,11 +2209,15 @@ MonoBehaviour:
   minSwipeDistance: 50
   rotationSpeed: 10
   bounciness: 0.305
+  deadlyWallDamage: 5
+  deadlyWallDamageCooldown: 0.5
+  iFrameDuration: 2
   health: 100
   score: 0
   currentItemSprite: {fileID: 0}
   isInvincible: 0
   itemSlotUI: {fileID: 0}
+  bubbleEffect: {fileID: 967192446}
 --- !u!1 &2001357951
 GameObject:
   m_ObjectHideFlags: 0
@@ -1916,8 +2245,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.76, y: 0.76, z: 0.76}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1756188892}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1937,7 +2266,7 @@ MonoBehaviour:
   - {fileID: 912274714304952188, guid: 881e0999589eb684e82ed434d24cf7ad, type: 3}
   - {fileID: 1697822578255477888, guid: 43c208701aa81b34f9e86a86780420ab, type: 3}
   - {fileID: 2790824204853007973, guid: 659be105b223e6b4ca21761d43b20963, type: 3}
-  - {fileID: 8235293730652810643, guid: 5acc979115af1024ba33aff46f2fc915, type: 3}
+  - {fileID: 436726687337977356, guid: af6bf07e4342483479fa4ce1f4d943b4, type: 3}
   maxObstacleCount: 5
   minSpawnDelay: 0.5
   maxSpawnDelay: 1

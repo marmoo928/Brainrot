@@ -15,7 +15,10 @@ public class ItemSpawner : MonoBehaviour
     public Vector2 areaMax = new Vector2(3f, 5f);
 
     private float _powerUpTimer = 20f;
+    private float _spawnInterval = 20f;
+    private bool _isPaused = false;
     private List<GameObject> _spawnedItems = new List<GameObject>();
+    private GameObject[] _activePrefabs;
 
     void Start()
     {
@@ -33,14 +36,10 @@ public class ItemSpawner : MonoBehaviour
 
     void OnGravityChanged(Vector2 newDir)
     {
-        // Zrus vsetky spawnute itemy
         foreach (GameObject item in _spawnedItems)
-        {
             if (item != null) Destroy(item);
-        }
         _spawnedItems.Clear();
 
-        // Zrus aj volne lezace dropy zo sceny
         foreach (var obj in FindObjectsByType<ScoreItem>(FindObjectsSortMode.None))
             Destroy(obj.gameObject);
         foreach (var obj in FindObjectsByType<Heal>(FindObjectsSortMode.None))
@@ -49,17 +48,28 @@ public class ItemSpawner : MonoBehaviour
             Destroy(obj.gameObject);
     }
 
+    public void SetPaused(bool paused) => _isPaused = paused;
+
+    public void Configure(GameObject[] prefabs, float spawnInterval)
+    {
+        _activePrefabs = prefabs;
+        _spawnInterval = spawnInterval;
+        _powerUpTimer = spawnInterval;
+    }
+
     void Update()
     {
+        if (_isPaused) return;
+
         _spawnedItems.RemoveAll(o => o == null);
 
         _powerUpTimer -= Time.deltaTime;
         if (_powerUpTimer > 0f) return;
 
-        _powerUpTimer = 20f;
+        _powerUpTimer = _spawnInterval;
 
-        bool spawnSekera = Random.value > 0.5f;
-        Spawn(spawnSekera ? sekeraPrefab : kliestePrefab);
+        if (_activePrefabs == null || _activePrefabs.Length == 0) return;
+        Spawn(_activePrefabs[Random.Range(0, _activePrefabs.Length)]);
     }
 
     void Spawn(GameObject prefab)
