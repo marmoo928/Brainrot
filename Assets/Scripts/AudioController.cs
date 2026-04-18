@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// Singleton audio manager. Attach to a persistent GameObject (e.g. GameManager).
-/// Assign clips in the Inspector. Call Play* methods from anywhere via AudioController.Instance.
+/// Assign clips in the Inspector. A random clip from each category is played on every call.
 /// </summary>
 [RequireComponent(typeof(AudioSource))]
 public class AudioController : MonoBehaviour
@@ -12,23 +12,34 @@ public class AudioController : MonoBehaviour
 
     // ── Inspector slots ────────────────────────────────────────────────────────
     [Header("Player Feedback Clips")]
-    [Tooltip("Played when the player takes damage (including deadly wall hits).")]
-    public AudioClip hurtClip;
+    [Tooltip("One random clip is picked each time the player takes damage.")]
+    public AudioClip[] hurtClips;
 
-    [Tooltip("Played when the player picks up a powerup.")]
-    public AudioClip powerupClip;
+    [Tooltip("One random clip is picked each time the player collects a powerup.")]
+    public AudioClip[] powerupClips;
 
-    [Tooltip("Played when the player collects a score item.")]
-    public AudioClip scoreItemClip;
+    [Tooltip("One random clip is picked each time the player collects a score item.")]
+    public AudioClip[] scoreItemClips;
 
-    [Tooltip("Played when the player collects a heal item.")]
-    public AudioClip healClip;
+    [Tooltip("One random clip is picked each time the player collects a heal item.")]
+    public AudioClip[] healClips;
+
+    [Tooltip("One clip for when the Iframe Bubble pops")]
+    public AudioClip[] bubblePopClip;
+
+    [Tooltip("One clip for when the Gravity changes")]
+    public AudioClip[] gravityChangeClip;
+
 
     [Header("Volume")]
-    [Range(0f, 1f)] public float hurtVolume     = 1f;
-    [Range(0f, 1f)] public float powerupVolume   = 1f;
-    [Range(0f, 1f)] public float scoreItemVolume = 1f;
-    [Range(0f, 1f)] public float healVolume      = 1f;
+    [Range(0f, 1f)] public float hurtVolume      = 1f;
+    [Range(0f, 1f)] public float powerupVolume    = 1f;
+    [Range(0f, 1f)] public float scoreItemVolume  = 1f;
+    [Range(0f, 1f)] public float healVolume       = 1f;
+    [Range(0f, 1f)] public float bubbleVolume       = 1f;
+    [Range(0f, 1f)] public float gravityChangeVolume       = 1f;
+
+
 
     // ── Private ────────────────────────────────────────────────────────────────
     private AudioSource _source;
@@ -36,7 +47,6 @@ public class AudioController : MonoBehaviour
     // ── Unity lifecycle ────────────────────────────────────────────────────────
     private void Awake()
     {
-        // Enforce singleton
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -47,30 +57,47 @@ public class AudioController : MonoBehaviour
 
         _source = GetComponent<AudioSource>();
         _source.playOnAwake = false;
+
+        EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
+        if (env != null)
+        {
+            env.onGravityChanged.AddListener(OnGravityChanged);
+        }
+        else
+        {
+            Debug.LogWarning("[PlayerController] No EnvironmentBehaviour found in parent.");
+        }
     }
 
     // ── Public API ─────────────────────────────────────────────────────────────
-
-    /// <summary>Play the hurt sound (damage / deadly wall).</summary>
-    public void PlayHurt()      => Play(hurtClip,      hurtVolume);
-
-    /// <summary>Play the powerup collection sound.</summary>
-    public void PlayPowerup()   => Play(powerupClip,   powerupVolume);
-
-    /// <summary>Play the score item collection sound.</summary>
-    public void PlayScoreItem() => Play(scoreItemClip, scoreItemVolume);
-
-    /// <summary>Play the heal item collection sound.</summary>
-    public void PlayHeal()      => Play(healClip,      healVolume);
+    public void PlayHurt()      => Play(hurtClips,      hurtVolume);
+    public void PlayPowerup()   => Play(powerupClips,   powerupVolume);
+    public void PlayScoreItem() => Play(scoreItemClips, scoreItemVolume);
+    public void PlayHeal()      => Play(healClips,      healVolume);
+    public void PlayBubblePop() => Play(bubblePopClip, bubbleVolume);
+    public void PlayGravityChange() => Play(gravityChangeClip, gravityChangeVolume);
 
     // ── Internal ───────────────────────────────────────────────────────────────
-    private void Play(AudioClip clip, float volume)
+    private void Play(AudioClip[] clips, float volume)
     {
-        if (clip == null)
+        if (clips == null || clips.Length == 0)
         {
-            Debug.LogWarning("[AudioController] Clip is null — assign it in the Inspector.");
+            Debug.LogWarning("[AudioController] Clip array is empty — assign clips in the Inspector.");
             return;
         }
+
+        // Pick a random clip, avoiding a null entry if the array has gaps
+        AudioClip clip = clips[Random.Range(0, clips.Length)];
+        if (clip == null)
+        {
+            Debug.LogWarning("[AudioController] Selected clip is null — check for empty slots in the array.");
+            return;
+        }
+
         _source.PlayOneShot(clip, volume);
+    }
+
+    private void OnGravityChanged(Vector2 newGravityDirection){
+        PlayGravityChange();
     }
 }
