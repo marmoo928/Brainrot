@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
     [Header("Transition UI")]
     public GameObject transitionPanel;
     public AudioSource voiceAudioSource;
+    public RewardFlyIn[] rewardSlots;         // Sloty na motherboarde — kazdy ma RewardFlyIn komponent
     public Image[] rewardSlots;
 
     [Header("Canvases")]
@@ -132,15 +133,13 @@ public class GameManager : MonoBehaviour
 
         if (transitionPanel != null) transitionPanel.SetActive(true);
 
+        // 3. Animacia odmeny na motherboarde
         int rewardIndex = _currentLevel - 1;
         if (rewardSlots != null && rewardIndex < rewardSlots.Length && rewardSlots[rewardIndex] != null)
         {
             LevelConfig prev = levels[_currentLevel - 1];
             if (prev.rewardSprite != null)
-            {
-                rewardSlots[rewardIndex].sprite = prev.rewardSprite;
-                rewardSlots[rewardIndex].enabled = true;
-            }
+                rewardSlots[rewardIndex].PlayFlyIn(prev.rewardSprite);
         }
 
         float waitTime = 3f;

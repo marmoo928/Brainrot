@@ -27,8 +27,13 @@ public class AudioController : MonoBehaviour
     [Range(0f, 1f)] public float bubbleVolume        = 1f;
     [Range(0f, 1f)] public float gravityChangeVolume = 1f;
 
+    [Header("Background Music")]
+    public AudioClip musicClip;
+    [Range(0f, 1f)] public float musicVolume = 0.5f;
+
+    // ── Private ────────────────────────────────────────────────────────────────
     private AudioSource _source;
-    private bool _gameStarted = false;
+    private AudioSource _musicSource;
 
     private void Awake()
     {
@@ -42,6 +47,15 @@ public class AudioController : MonoBehaviour
 
         _source = GetComponent<AudioSource>();
         _source.playOnAwake = false;
+
+        _musicSource = gameObject.AddComponent<AudioSource>();
+        _musicSource.clip = musicClip;
+        _musicSource.loop = true;
+        _musicSource.volume = musicVolume;
+        _musicSource.playOnAwake = false;
+        if (musicClip != null) _musicSource.Play();
+    }
+
 
         EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
         if (env != null)

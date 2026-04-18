@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a95f85fab1c33f545bc19a5eb13dd44d
+guid: 01325ae658de1bd498393b4b2d40f4ba
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7084060711741569152
-    second: cable_0
+      213: -4914819738656092417
+    second: motherbase 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: cable_0
+      name: motherbase 1_0
       rect:
         serializedVersion: 2
-        x: 309
-        y: 207
-        width: 126
-        height: 114
+        x: 245
+        y: 101
+        width: 1064
+        height: 728
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 08838a23fa3af4260800000000000000
-      internalID: 7084060711741569152
+      spriteID: ffe435ecc7d0bcbb0800000000000000
+      internalID: -4914819738656092417
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      cable_0: 7084060711741569152
+      motherbase 1_0: -4914819738656092417
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
