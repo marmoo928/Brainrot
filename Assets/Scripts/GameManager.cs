@@ -45,6 +45,12 @@ public class GameManager : MonoBehaviour
     public AudioSource voiceAudioSource;
     public RewardFlyIn[] rewardSlots;         // Sloty na motherboarde — kazdy ma RewardFlyIn komponent
 
+    [Header("Doom Slots")]
+    [Tooltip("Sloty ktore sa odomykaju postupne po ziskani zakladnych odmien.")]
+    public GameObject[] doomSlots;
+    [Tooltip("Po kolkom leveli sa zacnu odomykat doom sloty. Default=4 (po ziskani vsetkych 4 odmien).")]
+    public int doomSlotsStartLevel = 4;
+
     [Header("Canvases")]
     public GameObject startMenuCanvas;   // drag StartMenu
     public GameObject hudCanvas;         // drag HUD
@@ -165,7 +171,23 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(waitTime);
 
+        // Post hlaška z AudioController
+        if (audio != null)
+        {
+            float postLength = audio.PlayLevelVoicePost(rewardIndex);
+            if (postLength > 0f)
+                yield return new WaitForSeconds(audio.levelVoicePostDelay + postLength);
+        }
+
         if (transitionPanel != null) transitionPanel.SetActive(false);
+
+        // Odomkni doom sloty postupne — jeden per level po doomSlotsStartLevel
+        if (doomSlots != null)
+        {
+            int doomIndex = _currentLevel - doomSlotsStartLevel;
+            if (doomIndex >= 0 && doomIndex < doomSlots.Length && doomSlots[doomIndex] != null)
+                doomSlots[doomIndex].SetActive(true);
+        }
 
         ApplyLevel(_currentLevel);
         SetGameplayPaused(false);

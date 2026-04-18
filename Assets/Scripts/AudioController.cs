@@ -39,6 +39,13 @@ public class AudioController : MonoBehaviour
     [Range(0f, 1f)] public float gravityChangeVolume = 1f;
     [Range(0f, 1f)] public float rewardVolume        = 1f;
 
+    [Header("Level Voice Post Clips")]
+    [Tooltip("Hlasky ktore sa prehrajú PO hlavnej hlaske. Index = cislo odmeny (0=kabel,1=ram,2=grafika,3=cpu,4=fan...).")]
+    public AudioClip[] levelVoicePostClips;
+    [Range(0f, 1f)] public float levelVoicePostVolume = 1f;
+    [Tooltip("Pauza medzi hlavnou a post hlaskou v sekundach.")]
+    public float levelVoicePostDelay = 0.5f;
+
     [Header("Game Start")]
     [Tooltip("Zvuk ktory sa zapusti tesne pred spustenim hry (po kliknuti Play).")]
     public AudioClip gameStartClip;
@@ -89,6 +96,16 @@ public class AudioController : MonoBehaviour
         EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
         if (env != null)
             env.onGravityChanged.AddListener(OnGravityChanged);
+    }
+
+    /// <summary>Prehraj post hlasku pre dany reward index. Vracia dlzku clipu (0 ak neexistuje).</summary>
+    public float PlayLevelVoicePost(int rewardIndex)
+    {
+        if (levelVoicePostClips == null || rewardIndex >= levelVoicePostClips.Length) return 0f;
+        AudioClip clip = levelVoicePostClips[rewardIndex];
+        if (clip == null) return 0f;
+        _source.PlayOneShot(clip, levelVoicePostVolume);
+        return clip.length;
     }
 
     /// <summary>Called by GameManager at start/end of level transition.</summary>
