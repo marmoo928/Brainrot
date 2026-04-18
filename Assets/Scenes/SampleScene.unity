@@ -1033,6 +1033,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.0316076, y: 4.47491}
   m_EdgeRadius: 0
+--- !u!114 &972837268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972837265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9d01c86eb4ce4d48a796dfd18bbb3dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WallIdentifier
+  side: 2
 --- !u!1 &976777881
 GameObject:
   m_ObjectHideFlags: 0
@@ -1349,6 +1362,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 5.9965897, y: 0.58935153}
   m_EdgeRadius: 0
+--- !u!114 &1384907882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384907879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9d01c86eb4ce4d48a796dfd18bbb3dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WallIdentifier
+  side: 0
 --- !u!1 &1478079974
 GameObject:
   m_ObjectHideFlags: 0
@@ -1884,6 +1910,9 @@ MonoBehaviour:
   minSwipeDistance: 50
   rotationSpeed: 10
   bounciness: 0.305
+  deadlyWallDamage: 5
+  deadlyWallDamageCooldown: 0.5
+  iFrameDuration: 2
   health: 100
   score: 0
   currentItemSprite: {fileID: 0}
