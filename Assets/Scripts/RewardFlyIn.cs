@@ -16,6 +16,9 @@ public class RewardFlyIn : MonoBehaviour
     [Tooltip("Začne so scale 0 a vyrastie na 1.")]
     public bool scaleIn = true;
 
+    [Tooltip("Cenovka ktora sa skryje ked priletí odmena.")]
+    public GameObject priceTag;
+
     private RectTransform _rect;
     private Image _image;
     private Vector2 _targetPosition;
@@ -37,6 +40,7 @@ public class RewardFlyIn : MonoBehaviour
             _image.sprite = sprite;
             _image.enabled = true;
         }
+        if (priceTag != null) priceTag.SetActive(false);
         StopAllCoroutines();
         StartCoroutine(FlyInRoutine());
     }

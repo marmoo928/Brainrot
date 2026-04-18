@@ -103,9 +103,9 @@ TextureImporter:
       name: virus3_0
       rect:
         serializedVersion: 2
-        x: 2
+        x: 0
         y: 0
-        width: 188
+        width: 192
         height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
