@@ -71,6 +71,13 @@ public class BreakableBox : MonoBehaviour
                 dropRb.AddForce(launchDir * launchForce, ForceMode2D.Impulse);
         }
 
+        AudioController audio = AudioController.Instance;
+        if (audio != null)
+        {
+            if (type == BreakType.Wood)  audio.PlayBreakWood();
+            else                         audio.PlayBreakSteel();
+        }
+
         player.ClearItem();
         Destroy(gameObject);
     }
