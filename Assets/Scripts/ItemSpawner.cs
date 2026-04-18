@@ -16,11 +16,11 @@ public class ItemSpawner : MonoBehaviour
 
     private float _powerUpTimer = 20f;
     private float _spawnInterval = 20f;
-    private bool _isPaused = false;
+    private bool _isPaused = true;
     private List<GameObject> _spawnedItems = new List<GameObject>();
     private GameObject[] _activePrefabs;
 
-    void Start()
+    void Awake()
     {
         EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
         if (env != null)
@@ -59,6 +59,7 @@ public class ItemSpawner : MonoBehaviour
 
     void Update()
     {
+        Debug.Log($"[ItemSpawner] isPaused={_isPaused}");
         if (_isPaused) return;
 
         _spawnedItems.RemoveAll(o => o == null);
