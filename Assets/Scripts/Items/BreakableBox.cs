@@ -19,6 +19,22 @@ public class BreakableBox : MonoBehaviour
     [Tooltip("O kolko jednotiek sa spawn posunie dopredu v smere letu.")]
     public float spawnOffset = 1.5f;
 
+    [Header("Drop Spawn Bounds")]
+    [Tooltip("Spawn sa clampne do tejto oblasti (rovnaka ako hracia plocha).")]
+    public Vector2 boundsMin = new Vector2(-3.5f, -2.5f);
+    public Vector2 boundsMax = new Vector2(3.5f, 2.5f);
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Vector3 bl = new Vector3(boundsMin.x, boundsMin.y, 0f);
+        Vector3 br = new Vector3(boundsMax.x, boundsMin.y, 0f);
+        Vector3 tl = new Vector3(boundsMin.x, boundsMax.y, 0f);
+        Vector3 tr = new Vector3(boundsMax.x, boundsMax.y, 0f);
+        Gizmos.DrawLine(bl, br); Gizmos.DrawLine(br, tr);
+        Gizmos.DrawLine(tr, tl); Gizmos.DrawLine(tl, bl);
+    }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         PlayerController player = collision.gameObject.GetComponent<PlayerController>();
@@ -39,8 +55,16 @@ public class BreakableBox : MonoBehaviour
             float spread = Random.Range(-launchSpread * 0.5f, launchSpread * 0.5f);
             launchDir = Quaternion.Euler(0f, 0f, spread) * launchDir;
 
-            Vector3 spawnPos = transform.position + (Vector3)(launchDir * spawnOffset);
-            GameObject spawned = Instantiate(drop, spawnPos, Quaternion.identity);
+            Vector3 raw = transform.position + (Vector3)(launchDir * spawnOffset);
+            GameObject spawned = Instantiate(drop, raw, Quaternion.identity);
+
+            Renderer r = spawned.GetComponent<Renderer>();
+            float hw = r != null ? r.bounds.extents.x : 0f;
+            float hh = r != null ? r.bounds.extents.y : 0f;
+            spawned.transform.position = new Vector3(
+                Mathf.Clamp(raw.x, boundsMin.x + hw, boundsMax.x - hw),
+                Mathf.Clamp(raw.y, boundsMin.y + hh, boundsMax.y - hh),
+                0f);
 
             Rigidbody2D dropRb = spawned.GetComponent<Rigidbody2D>();
             if (dropRb != null)

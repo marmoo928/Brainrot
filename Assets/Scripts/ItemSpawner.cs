@@ -78,6 +78,33 @@ public class ItemSpawner : MonoBehaviour
         float x = Random.Range(areaMin.x, areaMax.x);
         float y = Random.Range(areaMin.y, areaMax.y);
         GameObject go = Instantiate(prefab, new Vector3(x, y, 0f), Quaternion.identity);
+
+        Renderer r = go.GetComponent<Renderer>();
+        if (r != null)
+        {
+            float hw = r.bounds.extents.x;
+            float hh = r.bounds.extents.y;
+            Vector3 pos = go.transform.position;
+            pos.x = Mathf.Clamp(pos.x, areaMin.x + hw, areaMax.x - hw);
+            pos.y = Mathf.Clamp(pos.y, areaMin.y + hh, areaMax.y - hh);
+            go.transform.position = pos;
+        }
+
         _spawnedItems.Add(go);
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Vector3 bl = new Vector3(areaMin.x, areaMin.y, 0f);
+        Vector3 br = new Vector3(areaMax.x, areaMin.y, 0f);
+        Vector3 tl = new Vector3(areaMin.x, areaMax.y, 0f);
+        Vector3 tr = new Vector3(areaMax.x, areaMax.y, 0f);
+        Gizmos.DrawLine(bl, br); Gizmos.DrawLine(br, tr);
+        Gizmos.DrawLine(tr, tl); Gizmos.DrawLine(tl, bl);
+
+        float d = 0.08f;
+        Gizmos.DrawSphere(bl, d); Gizmos.DrawSphere(br, d);
+        Gizmos.DrawSphere(tl, d); Gizmos.DrawSphere(tr, d);
     }
 }

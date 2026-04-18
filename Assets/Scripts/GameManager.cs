@@ -41,9 +41,9 @@ public class GameManager : MonoBehaviour
     public LevelConfig[] levels;
 
     [Header("Transition UI")]
-    public GameObject transitionPanel;        // Panel ktory sa ukaze pocas pauzy
-    public AudioSource voiceAudioSource;      // AudioSource pre nadabing
-    public Image[] rewardSlots;               // Sloty na motherboarde pre suciastky
+    public GameObject transitionPanel;
+    public AudioSource voiceAudioSource;
+    public RewardFlyIn[] rewardSlots;         // Sloty na motherboarde — kazdy ma RewardFlyIn komponent
 
     // -------------------------------------------------------------------------
     private int _currentLevel = 0;
@@ -90,16 +90,13 @@ public class GameManager : MonoBehaviour
         // 2. Zobraz panel
         if (transitionPanel != null) transitionPanel.SetActive(true);
 
-        // 3. Zobraz odmenu na motherboarde
+        // 3. Animacia odmeny na motherboarde
         int rewardIndex = _currentLevel - 1;
         if (rewardSlots != null && rewardIndex < rewardSlots.Length && rewardSlots[rewardIndex] != null)
         {
             LevelConfig prev = levels[_currentLevel - 1];
             if (prev.rewardSprite != null)
-            {
-                rewardSlots[rewardIndex].sprite = prev.rewardSprite;
-                rewardSlots[rewardIndex].enabled = true;
-            }
+                rewardSlots[rewardIndex].PlayFlyIn(prev.rewardSprite);
         }
 
         // 4. Prehraj nadabing (placeholder — AudioClip priradit v Inspektore)
