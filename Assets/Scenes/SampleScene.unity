@@ -12138,7 +12138,7 @@ MonoBehaviour:
   rewardDoom2Clips:
   - {fileID: 8300000, guid: fecc684a8318467419eb35cd20631bac, type: 3}
   rewardDoom3Clips:
-  - {fileID: 8300000, guid: ac65efac80b422f49aaeebe5dbc579a1, type: 3}
+  - {fileID: 8300000, guid: f612924a1ae95d2439c65371b3f495fe, type: 3}
   hurtVolume: 0.448
   powerupVolume: 0.459
   scoreItemVolume: 0.466
@@ -12153,9 +12153,12 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 8300000, guid: 911f57a6ab098684dadb8fbfc647a498, type: 3}
   - {fileID: 8300000, guid: 2006bde020bd7c34e951d7b901991d7d, type: 3}
-  - {fileID: 8300000, guid: ac65efac80b422f49aaeebe5dbc579a1, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   levelVoicePostVolume: 1
   levelVoicePostDelay: 0.5
+  endingVoiceClip: {fileID: 8300000, guid: 1e9643de1b3a2f7478a763069289543a, type: 3}
+  endingVoiceVolume: 1
   gameStartClip: {fileID: 8300000, guid: 4ac03bb9fc56cb84680d82e8ed7a4021, type: 3}
   gameStartVolume: 1
   menuMusicClip: {fileID: 8300000, guid: 83896a1fa6a1773498ca9bfc8d18408f, type: 3}
@@ -37029,6 +37032,25 @@ MonoBehaviour:
     - {fileID: 908104647054301485, guid: 89e19a636e7e24541887e7e76a16feff, type: 3}
     - {fileID: 6402233045438724895, guid: c805b229aefddd548ac5399a6a8ecbd0, type: 3}
     itemSpawnInterval: 8
+    iFrameDuration: 0.6
+    voiceClip: {fileID: 0}
+    rewardSprite: {fileID: 3701528995349391597, guid: ed5ccd3d49edc3c498507e71cec3af15, type: 3}
+  - levelName: END
+    scoreThreshold: 6000
+    obstaclePrefabs:
+    - {fileID: 1697822578255477888, guid: 43c208701aa81b34f9e86a86780420ab, type: 3}
+    - {fileID: 912274714304952188, guid: 881e0999589eb684e82ed434d24cf7ad, type: 3}
+    - {fileID: 436726687337977356, guid: af6bf07e4342483479fa4ce1f4d943b4, type: 3}
+    - {fileID: 2790824204853007973, guid: 659be105b223e6b4ca21761d43b20963, type: 3}
+    obstacleSpeed: 0
+    gravityMode: 3
+    gravityStrength: 14
+    gravityMinInterval: 9
+    gravityMaxInterval: 14
+    itemPrefabs:
+    - {fileID: 908104647054301485, guid: 89e19a636e7e24541887e7e76a16feff, type: 3}
+    - {fileID: 6402233045438724895, guid: c805b229aefddd548ac5399a6a8ecbd0, type: 3}
+    itemSpawnInterval: 8888
     iFrameDuration: 0.6
     voiceClip: {fileID: 0}
     rewardSprite: {fileID: 3701528995349391597, guid: ed5ccd3d49edc3c498507e71cec3af15, type: 3}

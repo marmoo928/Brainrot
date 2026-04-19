@@ -295,6 +295,21 @@ public class GameManager : MonoBehaviour
                 doomSlots[doomIndex].SetActive(true);
         }
 
+        // Ak sme dosiahli posledny level — pusti ending hlasku a vypni hru
+        if (_currentLevel >= levels.Length - 1)
+        {
+            if (audio != null)
+            {
+                float endLength = audio.PlayEndingVoice();
+                if (endLength > 0f)
+                    yield return new WaitForSeconds(endLength);
+            }
+            if (audio != null) audio.SetLevelTransition(false);
+            _inTransition = false;
+            QuitGame();
+            yield break;
+        }
+
         ApplyLevel(_currentLevel);
 
         // Heal to 50% if below

@@ -51,6 +51,11 @@ public class AudioController : MonoBehaviour
     [Tooltip("Pauza medzi hlavnou a post hlaskou v sekundach.")]
     public float levelVoicePostDelay = 0.5f;
 
+    [Header("Ending")]
+    [Tooltip("Hlaska ktora sa pusti po ziskani poslednej odmeny. Po jej skonceni sa hra vypne.")]
+    public AudioClip endingVoiceClip;
+    [Range(0f, 1f)] public float endingVoiceVolume = 1f;
+
     [Header("Game Start")]
     [Tooltip("Zvuk ktory sa zapusti tesne pred spustenim hry (po kliknuti Play).")]
     public AudioClip gameStartClip;
@@ -111,6 +116,15 @@ public class AudioController : MonoBehaviour
         if (clip == null) return 0f;
         _source.PlayOneShot(clip, levelVoicePostVolume);
         return clip.length;
+    }
+
+    /// <summary>Prehraj ending hlasku. Vracia dlzku clipu (0 ak neexistuje).</summary>
+    public float PlayEndingVoice()
+    {
+        if (endingVoiceClip == null) return 0f;
+        _musicSource.Stop();
+        _source.PlayOneShot(endingVoiceClip, endingVoiceVolume);
+        return endingVoiceClip.length;
     }
 
     /// <summary>Called by GameManager at start/end of level transition.</summary>
