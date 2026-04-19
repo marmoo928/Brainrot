@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
     [Header("Canvases")]
     public GameObject startMenuCanvas;   // drag StartMenu
     public GameObject hudCanvas;         // drag HUD
+    public GameObject deathScreenCanvas;
 
     // -------------------------------------------------------------------------
     private int _currentLevel = 0;
