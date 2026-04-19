@@ -33,6 +33,22 @@ public class RewardFlyIn : MonoBehaviour
         if (_image != null) _image.enabled = false;
     }
 
+    public void ResetSlot()
+    {
+        StopAllCoroutines();
+        if (_image != null)
+        {
+            _image.sprite = null;
+            _image.enabled = false;
+        }
+        if (_rect != null)
+        {
+            _rect.anchoredPosition = _targetPosition;
+            _rect.localScale = _originalScale;
+        }
+        if (priceTag != null) priceTag.SetActive(true);
+    }
+
     public void PlayFlyIn(Sprite sprite)
     {
         if (_image != null)

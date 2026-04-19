@@ -50,6 +50,20 @@ public class ItemSpawner : MonoBehaviour
 
     public void SetPaused(bool paused) => _isPaused = paused;
 
+    public void ClearAll()
+    {
+        foreach (GameObject item in _spawnedItems)
+            if (item != null) Destroy(item);
+        _spawnedItems.Clear();
+
+        foreach (var obj in FindObjectsByType<ScoreItem>(FindObjectsSortMode.None))
+            Destroy(obj.gameObject);
+        foreach (var obj in FindObjectsByType<Heal>(FindObjectsSortMode.None))
+            Destroy(obj.gameObject);
+        foreach (var obj in FindObjectsByType<PowerUp>(FindObjectsSortMode.None))
+            Destroy(obj.gameObject);
+    }
+
     public void Configure(GameObject[] prefabs, float spawnInterval)
     {
         _activePrefabs = prefabs;

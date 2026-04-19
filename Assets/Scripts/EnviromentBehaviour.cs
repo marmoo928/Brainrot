@@ -95,6 +95,15 @@ public class EnvironmentBehaviour : MonoBehaviour
         _isPaused = paused;
     }
 
+    /// <summary>Resets gravity to Vector2.down and restarts the shift timer. Call after Configure() on restart.</summary>
+    public void ResetGravity()
+    {
+        StopAllCoroutines();
+        _sequentialIndex = 0;
+        ApplyGravity(Vector2.down);
+        StartCoroutine(GravityShiftRoutine());
+    }
+
     // -------------------------------------------------------------------------
     /// <summary>Applies the given direction as Unity's Physics2D gravity.</summary>
     private void ApplyGravity(Vector2 direction)

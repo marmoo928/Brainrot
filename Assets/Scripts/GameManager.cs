@@ -22,6 +22,10 @@ public class LevelConfig
     public GameObject[] itemPrefabs;
     public float itemSpawnInterval = 10f;
 
+    [Header("Player")]
+    [Tooltip("Ako dlho trva invincibility bubble po zasahu (sekundy).")]
+    public float iFrameDuration = 2f;
+
     [Header("Transition")]
     public AudioClip voiceClip;
     public Sprite rewardSprite;
@@ -84,6 +88,12 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (_gameStarted && Input.GetKeyDown(KeyCode.Escape))
+        {
+            GoToMenu();
+            return;
+        }
+
         if (!_gameStarted || _inTransition) return;
         if (player == null || levels == null || levels.Length == 0) return;
         if (_currentLevel >= levels.Length - 1) return;
@@ -93,6 +103,97 @@ public class GameManager : MonoBehaviour
             Debug.Log($"[GameManager] Level transition → {levels[_currentLevel + 1].levelName}");
             StartCoroutine(LevelTransition());
         }
+    }
+
+    // ── Quit ──────────────────────────────────────────────────────────────────
+    public void QuitGame()
+    {
+        AudioController audio = AudioController.Instance;
+        if (audio != null) audio.PlayButtonPress();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
+    // ── Game Over ─────────────────────────────────────────────────────────────
+    public void ShowGameOver()
+    {
+        StopAllCoroutines();
+        _inTransition = false;
+
+        SetGameplayPaused(true);
+        obstacleSpawner.ClearAll();
+        itemSpawner.ClearAll();
+
+        if (transitionPanel != null) transitionPanel.SetActive(false);
+        if (hudCanvas != null) hudCanvas.SetActive(false);
+        if (deathScreenCanvas != null) deathScreenCanvas.SetActive(true);
+
+        AudioController audio = AudioController.Instance;
+        if (audio != null) audio.NotifyGameOver();
+    }
+
+    public void GoToMenu()
+    {
+        AudioController audio = AudioController.Instance;
+        if (audio != null) audio.NotifyReturnToMenu();
+
+        ResetGameState();
+        if (deathScreenCanvas != null) deathScreenCanvas.SetActive(false);
+        if (hudCanvas != null) hudCanvas.SetActive(false);
+        if (startMenuCanvas != null) startMenuCanvas.SetActive(true);
+    }
+
+    public void RestartGame()
+    {
+        ResetGameState();
+        if (deathScreenCanvas != null) deathScreenCanvas.SetActive(false);
+        if (startMenuCanvas != null) startMenuCanvas.SetActive(false);
+        if (hudCanvas != null) hudCanvas.SetActive(true);
+
+        SetGameplayPaused(false);
+        _gameStarted = true;
+        if (player != null) player.StartInvincibility();
+
+        AudioController audio = AudioController.Instance;
+        if (audio != null) audio.NotifyGameStarted();
+    }
+
+    private void ResetGameState()
+    {
+        StopAllCoroutines();
+        _currentLevel = 0;
+        _gameStarted = false;
+        _inTransition = false;
+
+        if (player != null)
+        {
+            player.health = player.maxHealth;
+            player.score = 0;
+            player.ClearItem();
+            player.isInvincible = false;
+            player.gameObject.SetActive(true);
+            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+            if (rb != null) rb.linearVelocity = Vector2.zero;
+        }
+
+        obstacleSpawner.ClearAll();
+        itemSpawner.ClearAll();
+
+        if (rewardSlots != null)
+            foreach (RewardFlyIn slot in rewardSlots)
+                if (slot != null) slot.ResetSlot();
+
+        if (doomSlots != null)
+            foreach (GameObject slot in doomSlots)
+                if (slot != null) slot.SetActive(false);
+
+        ApplyLevel(0);
+        if (environment != null) environment.ResetGravity();
+        SetGameplayPaused(true);
     }
 
     // ── Called by PlayButtonScript ────────────────────────────────────────────
@@ -105,6 +206,7 @@ public class GameManager : MonoBehaviour
 
         SetGameplayPaused(false);
         _gameStarted = true;
+        if (player != null) player.StartInvincibility();
         AudioController audioController = AudioController.Instance;
         if (audioController != null) audioController.NotifyGameStarted();
         Debug.Log("[GameManager] Game started.");
@@ -159,6 +261,9 @@ public class GameManager : MonoBehaviour
                 case 1: audio.PlayRewardRamka();   break;
                 case 2: audio.PlayRewardGrafika(); break;
                 case 3: audio.PlayRewardCpu();     break;
+                case 4: audio.PlayRewardDoom1();   break;
+                case 5: audio.PlayRewardDoom2();   break;
+                case 6: audio.PlayRewardDoom3();   break;
             }
         }
 
@@ -191,7 +296,17 @@ public class GameManager : MonoBehaviour
         }
 
         ApplyLevel(_currentLevel);
+
+        // Heal to 50% if below
+        if (player != null)
+        {
+            int half = player.maxHealth / 2;
+            if (player.health < half)
+                player.health = half;
+        }
+
         SetGameplayPaused(false);
+        if (player != null) player.StartInvincibility();
 
         if (audio != null) audio.SetLevelTransition(false);
         _inTransition = false;
@@ -204,5 +319,6 @@ public class GameManager : MonoBehaviour
         obstacleSpawner.Configure(cfg.obstacleSpeed, cfg.obstaclePrefabs);
         itemSpawner.Configure(cfg.itemPrefabs, cfg.itemSpawnInterval);
         environment.Configure(cfg.gravityMode, cfg.gravityStrength, cfg.gravityMinInterval, cfg.gravityMaxInterval);
+        if (player != null) player.iFrameDuration = cfg.iFrameDuration;
     }
 }

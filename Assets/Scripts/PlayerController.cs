@@ -36,12 +36,14 @@ public class PlayerController : MonoBehaviour
     private WallIdentifier.WallSide _deadlyWallSide = WallIdentifier.WallSide.Bottom;
     private float _lastDeadlyWallHitTime = -999f;
 
+    public int maxHealth = 25;
     public int health = 25;
     public int score = 0;
 
     public BreakType? currentItem = null;
     public Sprite currentItemSprite = null;
     public bool isInvincible = false;
+    public float itemTimeRemaining = 0f;
 
     private Coroutine _rotationCoroutine;
     private Coroutine _invincibilityCoroutine;
@@ -57,14 +59,22 @@ public class PlayerController : MonoBehaviour
 
     public void ClearItem()
     {
-        StopCoroutine(nameof(ClearItemRoutine));
+        if (_clearItemCoroutine != null) StopCoroutine(_clearItemCoroutine);
+        _clearItemCoroutine = null;
+        itemTimeRemaining = 0f;
         currentItem = null;
         currentItemSprite = null;
     }
 
     private System.Collections.IEnumerator ClearItemRoutine()
     {
-        yield return new WaitForSeconds(5f);
+        itemTimeRemaining = 5f;
+        while (itemTimeRemaining > 0f)
+        {
+            itemTimeRemaining -= Time.deltaTime;
+            yield return null;
+        }
+        itemTimeRemaining = 0f;
         currentItem = null;
         currentItemSprite = null;
         _clearItemCoroutine = null;
@@ -77,6 +87,8 @@ public class PlayerController : MonoBehaviour
     // -------------------------------------------------------------------------
     void Awake()
     {
+        health = maxHealth;
+
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
         rb.sleepMode = RigidbodySleepMode2D.NeverSleep;
@@ -186,6 +198,10 @@ public class PlayerController : MonoBehaviour
             if (_rotationCoroutine != null) StopCoroutine(_rotationCoroutine);
             _rotationCoroutine = StartCoroutine(RotateToRoutine(targetRotation));
         }
+
+        // Give invincibility on gravity change only during active gameplay
+        if (rb.simulated)
+            StartInvincibility();
     }
 
     private void OnDeadlyWallChanged(WallIdentifier.WallSide deadlySide)
@@ -232,6 +248,12 @@ public class PlayerController : MonoBehaviour
         if (audio != null) audio.PlayBubblePop();
     }
 
+    public void StartInvincibility()
+    {
+        if (_invincibilityCoroutine != null) StopCoroutine(_invincibilityCoroutine);
+        _invincibilityCoroutine = StartCoroutine(InvincibilityRoutine());
+    }
+
     public void TakeDamage(int amount)
     {
         if (isInvincible) return;
@@ -241,8 +263,7 @@ public class PlayerController : MonoBehaviour
         AudioController audio = AudioController.Instance;
         if (audio != null) audio.PlayHurt();
 
-        if (_invincibilityCoroutine != null) StopCoroutine(_invincibilityCoroutine);
-        _invincibilityCoroutine = StartCoroutine(InvincibilityRoutine());
+        StartInvincibility();
 
         if (health <= 0)
             Die();
@@ -265,5 +286,7 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         rb.simulated = false;
         gameObject.SetActive(false);
+        if (GameManager.Instance != null)
+            GameManager.Instance.ShowGameOver();
     }
 }

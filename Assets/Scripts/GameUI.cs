@@ -8,10 +8,10 @@ public class GameUI : MonoBehaviour
 
     public TMP_Text scoreText;
     public Image itemImage;
+    public TMP_Text itemTimerText;
 
     [Header("Health Bar")]
     public Image healthBarFill;
-    public int maxHealth = 25;
 
     void Update()
     {
@@ -19,12 +19,25 @@ public class GameUI : MonoBehaviour
             scoreText.text = "Score: " + player.score;
 
         if (healthBarFill != null)
-            healthBarFill.fillAmount = Mathf.Clamp01((float)player.health / maxHealth);
+            healthBarFill.fillAmount = Mathf.Clamp01((float)player.health / player.maxHealth);
 
         if (itemImage != null)
         {
             itemImage.sprite = player.currentItemSprite;
             itemImage.enabled = player.currentItemSprite != null;
+        }
+
+        if (itemTimerText != null)
+        {
+            if (player.itemTimeRemaining > 0f)
+            {
+                itemTimerText.text = Mathf.CeilToInt(player.itemTimeRemaining).ToString();
+                itemTimerText.enabled = true;
+            }
+            else
+            {
+                itemTimerText.enabled = false;
+            }
         }
     }
 }

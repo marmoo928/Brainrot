@@ -29,6 +29,11 @@ public class AudioController : MonoBehaviour
     public AudioClip[] rewardGrafikaClips;
     public AudioClip[] rewardCpuClips;
 
+    [Header("Doom Reward Clips")]
+    public AudioClip[] rewardDoom1Clips;
+    public AudioClip[] rewardDoom2Clips;
+    public AudioClip[] rewardDoom3Clips;
+
     [Header("Volume")]
     [Range(0f, 1f)] public float hurtVolume         = 1f;
     [Range(0f, 1f)] public float powerupVolume       = 1f;
@@ -129,6 +134,28 @@ public class AudioController : MonoBehaviour
         }
     }
 
+    /// <summary>Called by GameManager when the player dies. Stops all music.</summary>
+    public void NotifyGameOver()
+    {
+        _gameStarted = false;
+        _inLevelTransition = false;
+        _musicSource.Stop();
+    }
+
+    /// <summary>Called by GameManager when returning to the main menu. Restarts menu music.</summary>
+    public void NotifyReturnToMenu()
+    {
+        _gameStarted = false;
+        _inLevelTransition = false;
+        _musicSource.Stop();
+        if (menuMusicClip != null)
+        {
+            _musicSource.clip = menuMusicClip;
+            _musicSource.volume = menuMusicVolume;
+            _musicSource.Play();
+        }
+    }
+
     public void PlayHurt()          => Play(hurtClips,          hurtVolume);
     public void PlayPowerup()       => Play(powerupClips,        powerupVolume);
     public void PlayScoreItem()     => Play(scoreItemClips,      scoreItemVolume);
@@ -142,6 +169,9 @@ public class AudioController : MonoBehaviour
     public void PlayRewardRamka()   => Play(rewardRamkaClips,    rewardVolume,  ignoreTransition: true);
     public void PlayRewardGrafika() => Play(rewardGrafikaClips,  rewardVolume,  ignoreTransition: true);
     public void PlayRewardCpu()     => Play(rewardCpuClips,      rewardVolume,  ignoreTransition: true);
+    public void PlayRewardDoom1()   => Play(rewardDoom1Clips,    rewardVolume,  ignoreTransition: true);
+    public void PlayRewardDoom2()   => Play(rewardDoom2Clips,    rewardVolume,  ignoreTransition: true);
+    public void PlayRewardDoom3()   => Play(rewardDoom3Clips,    rewardVolume,  ignoreTransition: true);
 
     private void Play(AudioClip[] clips, float volume, bool ignoreTransition = false)
     {
