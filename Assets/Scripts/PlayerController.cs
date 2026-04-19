@@ -31,10 +31,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 swipeStart;
     private bool isSwiping = false;
 
-    // Cached velocity from the frame BEFORE collision
     private Vector2 _velocityBeforeCollision;
 
-    // Which wall side is currently deadly (set by EnvironmentBehaviour event)
     private WallIdentifier.WallSide _deadlyWallSide = WallIdentifier.WallSide.Bottom;
     private float _lastDeadlyWallHitTime = -999f;
 
@@ -45,7 +43,6 @@ public class PlayerController : MonoBehaviour
     public Sprite currentItemSprite = null;
     public bool isInvincible = false;
 
-    // Tracked individually so StopAllCoroutines() is never needed
     private Coroutine _rotationCoroutine;
     private Coroutine _invincibilityCoroutine;
     private Coroutine _clearItemCoroutine;
@@ -82,6 +79,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
+        rb.sleepMode = RigidbodySleepMode2D.NeverSleep;
 
         EnvironmentBehaviour env = GetComponentInParent<EnvironmentBehaviour>();
         if (env != null)
@@ -150,14 +148,26 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = reflected;
 
         // --- Deadly wall check ---
-        WallIdentifier wall = collision.gameObject.GetComponent<WallIdentifier>();
-        if (wall != null && wall.side == _deadlyWallSide)
+        TryDeadlyWallDamage(collision.gameObject);
+    }
+
+    // Fires every physics frame while player stays in contact with the wall
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        if (!collision.gameObject.CompareTag("Wall")) return;
+        TryDeadlyWallDamage(collision.gameObject);
+    }
+
+    // Shared damage logic used by both Enter and Stay
+    private void TryDeadlyWallDamage(GameObject wallObject)
+    {
+        WallIdentifier wall = wallObject.GetComponent<WallIdentifier>();
+        if (wall == null || wall.side != _deadlyWallSide) return;
+
+        if (Time.time - _lastDeadlyWallHitTime >= deadlyWallDamageCooldown)
         {
-            if (Time.time - _lastDeadlyWallHitTime >= deadlyWallDamageCooldown)
-            {
-                _lastDeadlyWallHitTime = Time.time;
-                TakeDamage(deadlyWallDamage);
-            }
+            _lastDeadlyWallHitTime = Time.time;
+            TakeDamage(deadlyWallDamage);
         }
     }
 
@@ -173,7 +183,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // Only stop and restart the rotation coroutine — nothing else
             if (_rotationCoroutine != null) StopCoroutine(_rotationCoroutine);
             _rotationCoroutine = StartCoroutine(RotateToRoutine(targetRotation));
         }
@@ -232,7 +241,6 @@ public class PlayerController : MonoBehaviour
         AudioController audio = AudioController.Instance;
         if (audio != null) audio.PlayHurt();
 
-        // Restart i-frames (cancel any existing ones first)
         if (_invincibilityCoroutine != null) StopCoroutine(_invincibilityCoroutine);
         _invincibilityCoroutine = StartCoroutine(InvincibilityRoutine());
 
